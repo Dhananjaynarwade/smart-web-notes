@@ -1,0 +1,173 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.title-input {
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  outline: none;
+  color: #0f172a;
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+
+  button {
+    padding: 0.3rem 0.55rem;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: #334155;
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    &:hover {
+      background: #e2e8f0;
+    }
+
+    &.active {
+      background: #dbeafe;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+    }
+  }
+
+  .sep {
+    width: 1px;
+    height: 20px;
+    background: #cbd5e1;
+    margin: 0 0.25rem;
+  }
+
+  .upload-hint {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #3b82f6;
+  }
+}
+
+.editor-body {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.tiptap-surface {
+  display: block;
+  min-height: 320px;
+  padding: 1.25rem;
+}
+
+:host ::ng-deep {
+  .ProseMirror {
+    outline: none;
+    min-height: 280px;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: #334155;
+
+    p.is-editor-empty:first-child::before {
+      color: #94a3b8;
+      content: attr(data-placeholder);
+      float: left;
+      height: 0;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      margin: 1rem 0 0.5rem;
+      color: #0f172a;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      margin: 0.85rem 0 0.4rem;
+      color: #0f172a;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      margin: 0.75rem 0 0.35rem;
+      color: #0f172a;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.5rem;
+    }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      font-family: 'Cascadia Code', Consolas, monospace;
+      font-size: 0.875rem;
+    }
+
+    code {
+      background: #f1f5f9;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-family: 'Cascadia Code', Consolas, monospace;
+      font-size: 0.875em;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      margin: 0.5rem 0;
+      border: 1px solid #e2e8f0;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 0.75rem 0;
+
+      td,
+      th {
+        border: 1px solid #cbd5e1;
+        padding: 0.4rem 0.6rem;
+        min-width: 80px;
+      }
+
+      th {
+        background: #f1f5f9;
+        font-weight: 600;
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+<aside class="sidebar">
+  <nav class="nav-section">
+    <h3>Menu</h3>
+    <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Dashboard
+    </a>
+    <a routerLink="/notes/new" routerLinkActive="active">Create Note</a>
+  </nav>
+
+  <nav class="nav-section">
+    <h3>Folders</h3>
+    @for (folder of folders; track folder) {
+      <a href="#" class="folder-link">{{ folder }}</a>
+    }
+  </nav>
+
+  <nav class="nav-section recent">
+    <h3>Recent Notes</h3>
+    @if (notesService.notes().length === 0) {
+      <p class="empty">No notes yet</p>
+    } @else {
+      @for (note of notesService.notes().slice(0, 8); track note.id) {
+        <a [routerLink]="['/notes', note.id]" routerLinkActive="active" class="note-link">
+          {{ note.title || 'Untitled' }}
+        </a>
+      }
+    }
+  </nav>
+</aside>

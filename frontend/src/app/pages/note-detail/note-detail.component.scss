@@ -1,0 +1,61 @@
+.note-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 56px - 2.5rem);
+  max-width: 900px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.back {
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.875rem;
+
+  &:hover {
+    color: #334155;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button {
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.btn-save {
+  background: #3b82f6;
+  color: #fff;
+
+  &:hover {
+    background: #2563eb;
+  }
+}
+
+.btn-danger {
+  background: #fff;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+
+  &:hover {
+    background: #fef2f2;
+  }
+}
+
+app-note-editor {
+  flex: 1;
+  display: block;
+  min-height: 0;
+}

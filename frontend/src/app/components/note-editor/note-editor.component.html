@@ -1,0 +1,35 @@
+<div class="editor">
+  <input
+    class="title-input"
+    type="text"
+    placeholder="Note title"
+    [ngModel]="title()"
+    (ngModelChange)="onTitleInput($event)"
+  />
+
+  <div class="toolbar">
+    <button type="button" [class.active]="isActive('bold')" (click)="cmd('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+    <button type="button" [class.active]="isActive('italic')" (click)="cmd('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+    <button type="button" [class.active]="isActive('underline')" (click)="cmd('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
+    <span class="sep"></span>
+    <button type="button" [class.active]="isActive('heading', { level: 1 })" (click)="cmd('h1')">H1</button>
+    <button type="button" [class.active]="isActive('heading', { level: 2 })" (click)="cmd('h2')">H2</button>
+    <span class="sep"></span>
+    <button type="button" [class.active]="isActive('bulletList')" (click)="cmd('bullet')">• List</button>
+    <button type="button" [class.active]="isActive('orderedList')" (click)="cmd('ordered')">1. List</button>
+    <span class="sep"></span>
+    <button type="button" [class.active]="isActive('link')" (click)="cmd('link')" title="Link (Ctrl+K)">Link</button>
+    <button type="button" [class.active]="isActive('codeBlock')" (click)="cmd('code')">Code</button>
+    <button type="button" (click)="cmd('table')">Table</button>
+    <span class="sep"></span>
+    <button type="button" (click)="cmd('undo')" title="Undo (Ctrl+Z)">↩</button>
+    <button type="button" (click)="cmd('redo')" title="Redo (Ctrl+Y)">↪</button>
+    @if (uploading()) {
+      <span class="upload-hint">Uploading image...</span>
+    }
+  </div>
+
+  <div class="editor-body">
+    <tiptap-editor [editor]="editor" class="tiptap-surface"></tiptap-editor>
+  </div>
+</div>

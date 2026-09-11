@@ -1,0 +1,16 @@
+<div class="note-page">
+  <div class="toolbar">
+    <a routerLink="/dashboard" class="back">← Back</a>
+    <div class="actions">
+      <button type="button" class="btn-danger" (click)="deleteNote()">Delete</button>
+      <button type="button" class="btn-save" (click)="save()">Save Note</button>
+    </div>
+  </div>
+
+  <app-note-editor
+    [title]="note().title"
+    [content]="note().content"
+    (titleChange)="updateTitle($event)"
+    (contentChange)="updateContent($event)"
+  />
+</div>
