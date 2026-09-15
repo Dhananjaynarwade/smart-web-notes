@@ -1,11 +1,132 @@
 <div class="note-page">
+
+  <!-- ===================================== -->
+  <!-- TOOLBAR -->
+  <!-- ===================================== -->
+
   <div class="toolbar">
-    <a routerLink="/dashboard" class="back">← Back</a>
+
+    <a
+      routerLink="/dashboard"
+      class="back"
+    >
+      ← Back
+    </a>
+
+
     <div class="actions">
-      <button type="button" class="btn-danger" (click)="deleteNote()">Delete</button>
-      <button type="button" class="btn-save" (click)="save()">Save Note</button>
+
+      <!-- AUTO SAVE STATUS -->
+
+      @if (autoSaveStatus() === 'saving') {
+
+        <span class="autosave-status saving">
+          Saving...
+        </span>
+
+      }
+
+
+      @if (autoSaveStatus() === 'saved') {
+
+        <span class="autosave-status saved">
+          ✓ Saved
+        </span>
+
+      }
+
+
+      @if (autoSaveStatus() === 'error') {
+
+        <span class="autosave-status error">
+          Save failed
+        </span>
+
+      }
+
+
+      <button
+        type="button"
+        class="btn-danger"
+        (click)="deleteNote()"
+      >
+        Delete
+      </button>
+
+
+      <button
+        type="button"
+        class="btn-save"
+        (click)="save()"
+      >
+        Save Note
+      </button>
+
     </div>
+
   </div>
+
+
+  <!-- ===================================== -->
+  <!-- INLINE ALERT -->
+  <!-- ===================================== -->
+
+  @if (saveAlert(); as alert) {
+
+    <div
+      class="custom-alert"
+      [class.custom-alert-success]="alert.type === 'success'"
+      [class.custom-alert-warning]="alert.type === 'warning'"
+      [class.custom-alert-danger]="alert.type === 'danger'"
+      role="alert"
+    >
+
+      <div class="alert-icon">
+
+        @if (alert.type === 'success') {
+          ✓
+        }
+
+        @if (alert.type === 'warning') {
+          !
+        }
+
+        @if (alert.type === 'danger') {
+          ×
+        }
+
+      </div>
+
+
+      <div class="alert-content">
+
+        <h4 class="alert-heading">
+          {{ alert.title }}
+        </h4>
+
+
+        <p>
+          {{ alert.message }}
+        </p>
+
+
+        <hr>
+
+
+        <p class="alert-footer">
+          {{ alert.footer }}
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- ===================================== -->
+  <!-- NOTE EDITOR -->
+  <!-- ===================================== -->
 
   <app-note-editor
     [title]="note().title"
@@ -13,4 +134,5 @@
     (titleChange)="updateTitle($event)"
     (contentChange)="updateContent($event)"
   />
+
 </div>

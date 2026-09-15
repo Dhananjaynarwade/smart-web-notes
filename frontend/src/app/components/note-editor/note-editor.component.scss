@@ -171,3 +171,18 @@
     }
   }
 }
+:host ::ng-deep .ProseMirror img {
+  display: block;
+
+  max-width: 100%;
+
+  width: auto;
+
+  height: auto;
+
+  object-fit: contain;
+
+  margin: 12px 0;
+
+  border-radius: 6px;
+}

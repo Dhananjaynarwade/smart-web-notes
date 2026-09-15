@@ -1,0 +1,21 @@
+What changes after restart is only this: your development servers are stopped. You need to start them again.
+
+Backend:
+
+cd /d "D:\Dhananjay AWS\Django Projects\smart-web-notes\backend"
+
+.venv\Scripts\activate.bat
+
+python manage.py runserver
+
+Frontend in another terminal:
+
+cd /d "D:\Dhananjay AWS\Django Projects\smart-web-notes\frontend"
+
+ng serve
+
+Then open:
+
+http://localhost:4200
+
+and your saved notes should load from Django again.

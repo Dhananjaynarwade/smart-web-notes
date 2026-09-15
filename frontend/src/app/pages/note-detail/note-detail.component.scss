@@ -59,3 +59,197 @@ app-note-editor {
   display: block;
   min-height: 0;
 }
+:host ::ng-deep .ProseMirror a[data-source-ref] {
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+:host ::ng-deep .ProseMirror strong {
+  text-decoration: none;
+}
+/* =========================================
+   SAVE ALERT
+========================================= */
+
+.custom-alert {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 14px;
+
+  padding: 18px 20px;
+
+  margin: 15px 0 20px;
+
+  border: 1px solid;
+
+  border-radius: 10px;
+
+  animation: alertSlideDown 0.25s ease;
+}
+
+
+.alert-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+
+.alert-content {
+  flex: 1;
+}
+
+
+.alert-heading {
+  margin: 0 0 6px;
+
+  font-size: 18px;
+
+  font-weight: 700;
+}
+
+
+.alert-content p {
+  margin: 0 0 10px;
+
+  line-height: 1.5;
+}
+
+
+.alert-content hr {
+  margin: 12px 0;
+
+  border: 0;
+  border-top: 1px solid currentColor;
+
+  opacity: 0.2;
+}
+
+
+.alert-footer {
+  margin-bottom: 0 !important;
+
+  font-size: 14px;
+}
+
+
+/* SUCCESS */
+
+.custom-alert-success {
+  background: #d1e7dd;
+
+  border-color: #badbcc;
+
+  color: #0f5132;
+}
+
+
+.custom-alert-success .alert-icon {
+  background: #0f5132;
+
+  color: white;
+}
+
+
+/* WARNING */
+
+.custom-alert-warning {
+  background: #fff3cd;
+
+  border-color: #ffecb5;
+
+  color: #664d03;
+}
+
+
+.custom-alert-warning .alert-icon {
+  background: #ffc107;
+
+  color: #212529;
+}
+
+
+/* ERROR */
+
+.custom-alert-danger {
+  background: #f8d7da;
+
+  border-color: #f5c2c7;
+
+  color: #842029;
+}
+
+
+.custom-alert-danger .alert-icon {
+  background: #842029;
+
+  color: white;
+}
+
+
+/* =========================================
+   AUTO SAVE STATUS
+========================================= */
+
+.autosave-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  margin-right: 10px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+
+.autosave-status.saving {
+  color: #6c757d;
+}
+
+
+.autosave-status.saved {
+  color: #198754;
+}
+
+
+.autosave-status.error {
+  color: #dc3545;
+}
+
+
+/* =========================================
+   ALERT ANIMATION
+========================================= */
+
+@keyframes alertSlideDown {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(-8px);
+  }
+
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+
+}

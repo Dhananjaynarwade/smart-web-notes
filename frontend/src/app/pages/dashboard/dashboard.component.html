@@ -1,44 +1,137 @@
 <div class="dashboard">
+
   <header>
-    <h1>Dashboard</h1>
-    <p>Capture knowledge from the web. Create, edit, and organize your notes.</p>
+
+    <h1>
+      Dashboard
+    </h1>
+
+    <p>
+      Capture knowledge from the web.
+      Create, edit, and organize your notes.
+    </p>
+
   </header>
 
+
   <div class="stats">
+
     <div class="stat-card">
-      <span class="value">{{ notesService.notes().length }}</span>
-      <span class="label">Total Notes</span>
+
+      <span class="value">
+        {{ notesService.notes().length }}
+      </span>
+
+      <span class="label">
+        Total Notes
+      </span>
+
     </div>
+
+
     <div class="stat-card">
-      <span class="value">0</span>
-      <span class="label">Captured</span>
+
+      <span class="value">
+        0
+      </span>
+
+      <span class="label">
+        Captured
+      </span>
+
     </div>
+
+
     <div class="stat-card">
-      <span class="value">10</span>
-      <span class="label">Folders</span>
+
+      <span class="value">
+        10
+      </span>
+
+      <span class="label">
+        Folders
+      </span>
+
     </div>
+
   </div>
 
+
   <section class="recent">
+
     <div class="section-header">
-      <h2>Recent Notes</h2>
-      <a routerLink="/notes/new" class="link">+ New Note</a>
+
+      <h2>
+        Recent Notes
+      </h2>
+
+
+      <a
+        routerLink="/notes/new"
+        class="link"
+      >
+        + New Note
+      </a>
+
     </div>
 
+
     @if (notesService.notes().length === 0) {
+
       <div class="empty-state">
-        <p>No notes yet. Create your first note to get started.</p>
-        <a routerLink="/notes/new" class="btn">Create Note</a>
+
+        <p>
+          No notes yet.
+          Create your first note to get started.
+        </p>
+
+
+        <a
+          routerLink="/notes/new"
+          class="btn"
+        >
+          Create Note
+        </a>
+
       </div>
+
     } @else {
+
       <div class="note-grid">
-        @for (note of notesService.notes(); track note.id) {
-          <a [routerLink]="['/notes', note.id]" class="note-card">
-            <h3>{{ note.title || 'Untitled' }}</h3>
-            <p>{{ note.updatedAt | date: 'medium' }}</p>
+
+        @for (
+          note of notesService.notes();
+          track note.id
+        ) {
+
+          <a
+            [routerLink]="[
+              '/notes',
+              note.id
+            ]"
+            class="note-card"
+          >
+
+            <h3>
+              {{ note.title || 'Untitled' }}
+            </h3>
+
+
+            <p>
+              {{
+                note.updatedAt
+                  | date: 'medium'
+              }}
+            </p>
+
           </a>
+
         }
+
       </div>
+
     }
+
   </section>
+
 </div>

@@ -2,19 +2,17 @@
   "manifest_version": 3,
   "name": "Smart Web Notes",
   "version": "1.0.0",
-
-  "description": "Capture selected text into an already-open Smart Web Notes page.",
+  "description": "Capture selected web content into Smart Web Notes.",
 
   "permissions": [
     "contextMenus",
     "tabs",
     "scripting",
     "activeTab"
-
   ],
 
   "host_permissions": [
-    "http://localhost:4200/*"
+    "<all_urls>"
   ],
 
   "background": {
