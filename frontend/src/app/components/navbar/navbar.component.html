@@ -1,41 +1,189 @@
 <header class="navbar">
 
+  <!-- BRAND -->
+
   <a
     routerLink="/dashboard"
     class="brand"
   >
+
     <span class="brand-icon">
       📝
     </span>
 
     Smart Web Notes
+
   </a>
 
 
   <!-- SEARCH -->
-  <form
-    class="navbar-search"
-    role="search"
-  >
 
-    <input
-      class="form-control"
-      type="search"
-      placeholder="Search notes..."
-      aria-label="Search notes"
-    />
+  <div class="search-wrapper">
 
-    <button
-      class="btn-search"
-      type="submit"
+    <form
+      class="navbar-search"
+      role="search"
+      (submit)="onSearchSubmit($event)"
     >
-      Search
-    </button>
 
-  </form>
+      <input
+        class="form-control"
+        type="search"
+        placeholder="Search your notes..."
+        aria-label="Search notes"
+        autocomplete="off"
+
+        [value]="searchTerm()"
+
+        (input)="onSearchInput($event)"
+
+        (focus)="searchFocused.set(true)"
+      />
 
 
-  <!-- RIGHT SIDE -->
+      <button
+        class="btn-search"
+        type="submit"
+      >
+        Search
+      </button>
+
+    </form>
+
+
+    <!-- SEARCH RESULTS -->
+
+    @if (
+      searchFocused() &&
+      searchTerm().trim()
+    ) {
+
+      <div class="search-results">
+
+        @if (
+          searchResults().length > 0
+        ) {
+
+          @for (
+            note of searchResults();
+            track note.id;
+            let i = $index
+          ) {
+
+            <button
+              type="button"
+
+              class="search-result"
+
+              [class.result-blue]="i % 4 === 0"
+              [class.result-green]="i % 4 === 1"
+              [class.result-purple]="i % 4 === 2"
+              [class.result-orange]="i % 4 === 3"
+
+              (click)="openNote(note.id)"
+            >
+
+              <div class="result-top">
+
+                <span class="note-icon">
+                  📝
+                </span>
+
+
+                <span class="result-title">
+
+                  @for (
+                    part of titleParts(
+                      note.title
+                    );
+                    track $index
+                  ) {
+
+                    @if (part.match) {
+
+                      <mark>
+                        {{ part.text }}
+                      </mark>
+
+                    } @else {
+
+                      {{ part.text }}
+
+                    }
+
+                  }
+
+                </span>
+
+              </div>
+
+
+              <span class="result-preview">
+
+                {{
+                  notePreview(
+                    note.content
+                  )
+                }}
+
+              </span>
+
+            </button>
+
+          }
+
+        }@else {
+
+  <div class="no-results">
+
+    <div class="no-result-icon">
+      🔍
+    </div>
+
+
+    <div class="no-result-content">
+
+      <h4>
+        No note found
+      </h4>
+
+
+      <p>
+        We couldn't find a note named
+        <strong>
+          "{{ searchTerm() }}"
+        </strong>
+      </p>
+
+
+      <p class="create-message">
+        Would you like to create a new note?
+      </p>
+
+
+      <button
+        type="button"
+        class="create-note-btn"
+        (click)="createNewNote()"
+      >
+        + Create New Note
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+      </div>
+
+    }
+
+  </div>
+
+
+  <!-- NEW NOTE -->
+
   <div class="actions">
 
     <a

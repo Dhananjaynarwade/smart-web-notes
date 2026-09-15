@@ -1,24 +1,36 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import (
+    DefaultRouter
+)
 
-from .views import NoteViewSet, NoteImageViewSet
+from .views import (
+    NoteViewSet,
+    NoteImageViewSet,
+    FolderViewSet
+)
 
 
 router = DefaultRouter()
 
+
 router.register(
-    r'notes',
+    'notes',
     NoteViewSet,
-    basename='note'
+    basename='notes'
 )
+
 
 router.register(
-    r'images',
+    'images',
     NoteImageViewSet,
-    basename='image'
+    basename='images'
 )
 
 
-urlpatterns = [
-    path('', include(router.urls)),
-]
+router.register(
+    'folders',
+    FolderViewSet,
+    basename='folders'
+)
+
+
+urlpatterns = router.urls

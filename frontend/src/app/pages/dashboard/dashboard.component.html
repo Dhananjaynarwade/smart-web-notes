@@ -1,5 +1,9 @@
 <div class="dashboard">
 
+  <!-- ===================================== -->
+  <!-- HEADER -->
+  <!-- ===================================== -->
+
   <header>
 
     <h1>
@@ -13,6 +17,10 @@
 
   </header>
 
+
+  <!-- ===================================== -->
+  <!-- STATS -->
+  <!-- ===================================== -->
 
   <div class="stats">
 
@@ -45,7 +53,7 @@
     <div class="stat-card">
 
       <span class="value">
-        10
+        {{ folderService.folders().length }}
       </span>
 
       <span class="label">
@@ -57,13 +65,59 @@
   </div>
 
 
+  <!-- ===================================== -->
+  <!-- DASHBOARD FOLDER BUTTONS -->
+  <!-- ===================================== -->
+
+  <section class="folder-filter">
+
+    <h2>
+      Folders
+    </h2>
+
+
+    <div class="folder-buttons">
+
+      @for (
+        folder of folderService.folders();
+        track folder
+      ) {
+
+        <button
+          type="button"
+          class="folder-btn"
+
+          [class.active]="
+            folderService.selectedFolder() === folder
+          "
+
+          (click)="
+            folderService.selectFolder(folder)
+          "
+        >
+
+          {{ folder }}
+
+        </button>
+
+      }
+
+    </div>
+
+  </section>
+
+
+  <!-- ===================================== -->
+  <!-- NOTES -->
+  <!-- ===================================== -->
+
   <section class="recent">
 
     <div class="section-header">
-
-      <h2>
-        Recent Notes
-      </h2>
+      
+   <h2 class="selected-folder-title">
+      📂 {{ folderService.selectedFolder() }}
+    </h2>
 
 
       <a
@@ -76,13 +130,17 @@
     </div>
 
 
-    @if (notesService.notes().length === 0) {
+    <!-- NO NOTES IN THIS FOLDER -->
+
+    @if (filteredNotes().length === 0) {
 
       <div class="empty-state">
 
         <p>
-          No notes yet.
-          Create your first note to get started.
+          No notes found in
+          <strong>
+            {{ folderService.selectedFolder() }}
+          </strong>.
         </p>
 
 
@@ -90,17 +148,19 @@
           routerLink="/notes/new"
           class="btn"
         >
-          Create Note
+          + Create Note
         </a>
 
       </div>
 
     } @else {
 
+      <!-- NOTES GRID -->
+
       <div class="note-grid">
 
         @for (
-          note of notesService.notes();
+          note of filteredNotes();
           track note.id
         ) {
 
@@ -113,7 +173,10 @@
           >
 
             <h3>
-              {{ note.title || 'Untitled' }}
+              {{
+                note.title ||
+                'Untitled'
+              }}
             </h3>
 
 
@@ -123,6 +186,11 @@
                   | date: 'medium'
               }}
             </p>
+
+
+            <span class="note-folder">
+              📁 {{ note.folder }}
+            </span>
 
           </a>
 

@@ -29,7 +29,9 @@ import {
 import {
   toSignal
 } from '@angular/core/rxjs-interop';
-
+import {
+  FolderService
+} from '../../services/folder.service';
 
 @Component({
   selector: 'app-note-detail',
@@ -46,6 +48,8 @@ import {
     './note-detail.component.scss',
 })
 export class NoteDetailComponent implements OnDestroy {
+private readonly folderService =
+  inject(FolderService);
 
   private readonly route =
     inject(ActivatedRoute);
@@ -64,18 +68,36 @@ private readonly routeParams =
         this.route.snapshot.paramMap
     }
   );
+  // // ==========================================
+  // // FOLDERS
+  // // ==========================================
+
+  // readonly folders = [
+  //   'All Notes',
+  //   'DevOps',
+  //   'AWS',
+  //   'Angular',
+  //   'Django',
+  //   'Projects',
+  //   'Personal'
+  // ];
+  readonly folders =
+  this.folderService.folders;
+
   // ==========================================
   // NOTE
   // ==========================================
 
-  readonly note =
-    signal<Note>({
-      id: crypto.randomUUID(),
-      title: '',
-      content: '',
-      folder: 'All Notes',
-      updatedAt: new Date().toISOString(),
-    });
+readonly note =
+  signal<Note>({
+    id: crypto.randomUUID(),
+    title: '',
+    content: '',
+    folder:
+      this.folderService.selectedFolder(),
+    updatedAt:
+      new Date().toISOString(),
+  });
 
 
   // ==========================================
@@ -203,10 +225,12 @@ private readonly loadNoteEffect =
         content
       })
     );
+    
 
     this.scheduleAutoSave();
 
   }
+  
 
 
   // ==========================================
@@ -301,6 +325,20 @@ private readonly loadNoteEffect =
       );
 
   }
+  updateFolder(
+  folder: string
+): void {
+
+  this.note.update(
+    note => ({
+      ...note,
+      folder
+    })
+  );
+
+  this.scheduleAutoSave();
+
+}
 
 
   // ==========================================

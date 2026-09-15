@@ -2,11 +2,19 @@
   width: 240px;
   min-width: 240px;
   height: 100%;
+
   background: #f8fafc;
   border-right: 1px solid #e2e8f0;
+
   padding: 1rem 0;
+
   overflow-y: auto;
 }
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
 
 .nav-section {
   padding: 0 0.75rem;
@@ -14,19 +22,26 @@
 
   h3 {
     margin: 0 0 0.5rem 0.5rem;
+
     font-size: 0.7rem;
     font-weight: 600;
+
     text-transform: uppercase;
     letter-spacing: 0.05em;
+
     color: #64748b;
   }
 
   a {
     display: block;
+
     padding: 0.45rem 0.75rem;
+
     border-radius: 6px;
+
     color: #334155;
     text-decoration: none;
+
     font-size: 0.875rem;
 
     &:hover {
@@ -35,24 +50,385 @@
 
     &.active {
       background: #dbeafe;
+
       color: #1d4ed8;
+
       font-weight: 500;
     }
   }
 }
 
-.folder-link {
-  opacity: 0.85;
+
+/* =========================================
+   CREATE FOLDER
+========================================= */
+
+.create-folder-btn {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin: 4px 0 10px;
+
+  padding: 8px 11px;
+
+  border: 1px dashed #94a3b8;
+  border-radius: 7px;
+
+  background: #f8fafc;
+
+  color: #475569;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.note-link {
+
+.create-folder-btn:hover {
+  background: #eff6ff;
+
+  border-color: #3b82f6;
+
+  color: #2563eb;
+
+  transform: translateX(2px);
+}
+
+
+/* =========================================
+   FOLDER ROW
+========================================= */
+
+.folder-row {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+
+  margin-bottom: 4px;
+}
+
+
+.folder-row .folder-link {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 8px 72px 8px 10px;
+
+  margin: 0;
+
+  border-radius: 7px;
+
+  color: #475569;
+
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  box-sizing: border-box;
+
   white-space: nowrap;
+
   overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.folder-row .folder-link::before {
+  content: '📁';
+
+  flex-shrink: 0;
+
+  font-size: 13px;
+}
+
+
+.folder-row .folder-link:hover {
+  background: #eff6ff;
+
+  color: #2563eb;
+}
+
+
+.folder-row .folder-link.active {
+  background: #dbeafe;
+
+  color: #1d4ed8;
+
+  font-weight: 700;
+}
+
+
+.folder-row .folder-link.active::before {
+  content: '📂';
+}
+
+
+/* =========================================
+   FOLDER ACTIONS
+========================================= */
+
+.folder-actions {
+  position: absolute;
+
+  top: 50%;
+  right: 5px;
+
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+
+  gap: 2px;
+
+  opacity: 0;
+  visibility: hidden;
+
+  z-index: 5;
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+
+.folder-row:hover .folder-actions {
+  opacity: 1;
+
+  visibility: visible;
+}
+
+
+/* =========================================
+   FOLDER RENAME BUTTON
+========================================= */
+
+.rename-folder-btn {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid transparent;
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+
+.rename-folder-btn:hover {
+  background: #dbeafe;
+
+  border-color: #bfdbfe;
+
+  color: #2563eb;
+}
+
+
+/* =========================================
+   FOLDER DELETE BUTTON
+========================================= */
+
+.delete-folder-btn {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid transparent;
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+
+.delete-folder-btn:hover {
+  background: #fee2e2;
+
+  border-color: #fecaca;
+
+  color: #dc2626;
+}
+
+
+/* =========================================
+   RECENT NOTE ROW
+========================================= */
+
+.recent-note-row {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+
+  margin-bottom: 3px;
+}
+
+
+/* =========================================
+   RECENT NOTE LINK
+========================================= */
+
+.recent-note-row .note-link {
+  width: 100%;
+
+  display: block;
+
+  padding-right: 42px;
+
+  box-sizing: border-box;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
   text-overflow: ellipsis;
 }
 
+
+/* =========================================
+   RECENT NOTE DELETE BUTTON
+   ALWAYS VISIBLE
+========================================= */
+/* =========================================
+   RECENT NOTE DELETE BUTTON
+========================================= */
+
+.delete-note-btn {
+  position: absolute;
+
+  top: 50%;
+  right: 5px;
+
+  transform: translateY(-50%);
+
+  z-index: 20;
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid transparent;
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: #94a3b8;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* Show delete button when note is hovered */
+.recent-note-row:hover .delete-note-btn {
+  opacity: 1;
+  visibility: visible;
+
+  pointer-events: auto;
+}
+
+
+.delete-note-btn:hover {
+  background: #fee2e2;
+
+  border-color: #fecaca;
+
+  color: #dc2626;
+
+  transform:
+    translateY(-50%)
+    scale(1.08);
+}
+/* =========================================
+   EMPTY RECENT NOTES
+========================================= */
+
 .empty {
   margin: 0.25rem 0.75rem;
+
   font-size: 0.8rem;
+
   color: #94a3b8;
 }
+
+
+/* =========================================
+   SMALL SCREEN
+========================================= */
+
+@media (max-width: 900px) {
+
+  .folder-actions {
+    opacity: 1;
+    visibility: visible;
+  }
+
+}
+  

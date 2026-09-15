@@ -96,6 +96,8 @@
         }
 
       </div>
+      
+
 
 
       <div class="alert-content">
@@ -122,6 +124,37 @@
     </div>
 
   }
+   <!-- ===================================== -->
+  <!-- FOLDER SELECTOR -->
+  <!-- ===================================== -->
+
+  <div class="folder-selector">
+
+    <label for="folder">
+      📁 Folder
+    </label>
+
+    <select
+      id="folder"
+      [value]="note().folder"
+      (change)="updateFolder($any($event.target).value)"
+    >
+
+      @for (
+        folder of folders();
+        track folder
+      ) {
+
+        <option [value]="folder">
+          {{ folder }}
+        </option>
+
+      }
+
+    </select>
+
+  </div>
+
 
 
   <!-- ===================================== -->

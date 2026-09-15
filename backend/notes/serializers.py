@@ -1,15 +1,22 @@
 from rest_framework import serializers
 
-from .models import Note
-from .models import Note, NoteImage
+from .models import (
+    Note,
+    NoteImage,
+    Folder
+)
 
 
-class NoteSerializer(serializers.ModelSerializer):
+class NoteSerializer(
+    serializers.ModelSerializer
+):
 
-    # Allow Angular's UUID to be saved in Django
-    id = serializers.UUIDField(required=False)
+    id = serializers.UUIDField(
+        required=False
+    )
 
     class Meta:
+
         model = Note
 
         fields = [
@@ -27,9 +34,12 @@ class NoteSerializer(serializers.ModelSerializer):
         ]
 
 
-class NoteImageSerializer(serializers.ModelSerializer):
+class NoteImageSerializer(
+    serializers.ModelSerializer
+):
 
     class Meta:
+
         model = NoteImage
 
         fields = [
@@ -41,4 +51,24 @@ class NoteImageSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id',
             'uploaded_at',
+        ]
+
+
+class FolderSerializer(
+    serializers.ModelSerializer
+):
+
+    class Meta:
+
+        model = Folder
+
+        fields = [
+            'id',
+            'name',
+            'created_at',
+        ]
+
+        read_only_fields = [
+            'id',
+            'created_at',
         ]

@@ -1,29 +1,185 @@
 <aside class="sidebar">
+
+  <!-- ===================================== -->
+  <!-- MENU -->
+  <!-- ===================================== -->
+
   <nav class="nav-section">
-    <h3>Menu</h3>
-    <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+
+    <h3>
+      Menu
+    </h3>
+
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{
+        exact: true
+      }"
+    >
       Dashboard
     </a>
-    <a routerLink="/notes/new" routerLinkActive="active">Create Note</a>
+
+    <a
+      routerLink="/notes/new"
+      routerLinkActive="active"
+    >
+      Create Note
+    </a>
+
   </nav>
+
+
+  <!-- ===================================== -->
+  <!-- FOLDERS -->
+  <!-- ===================================== -->
 
   <nav class="nav-section">
-    <h3>Folders</h3>
-    @for (folder of folders; track folder) {
-      <a href="#" class="folder-link">{{ folder }}</a>
+
+    <h3>
+      Folders
+    </h3>
+
+    <button
+      type="button"
+      class="create-folder-btn"
+      (click)="createFolder()"
+    >
+      + Create Folder
+    </button>
+
+
+    @for (
+      folder of folderService.folders();
+      track folder
+    ) {
+
+      <div class="folder-row">
+
+        <a
+          routerLink="/dashboard"
+          class="folder-link"
+
+          [class.active]="
+            folderService.selectedFolder() === folder
+          "
+
+          (click)="selectFolder(folder)"
+        >
+          {{ folder }}
+        </a>
+
+
+        @if (
+          !folderService.isDefaultFolder(folder)
+        ) {
+
+          <div class="folder-actions">
+
+            <button
+              type="button"
+              class="rename-folder-btn"
+              title="Rename folder"
+
+              (click)="renameFolder(folder)"
+            >
+              ✏
+            </button>
+
+
+            <button
+              type="button"
+              class="delete-folder-btn"
+              title="Delete folder"
+
+              (click)="deleteFolder(folder)"
+            >
+              🗑
+            </button>
+
+          </div>
+
+        }
+
+      </div>
+
     }
+
   </nav>
 
+
+  <!-- ===================================== -->
+  <!-- RECENT NOTES -->
+  <!-- ===================================== -->
+
   <nav class="nav-section recent">
-    <h3>Recent Notes</h3>
-    @if (notesService.notes().length === 0) {
-      <p class="empty">No notes yet</p>
+
+    <h3>
+      Recent Notes
+    </h3>
+
+
+    @if (
+      notesService.notes().length === 0
+    ) {
+
+      <p class="empty">
+        No notes yet
+      </p>
+
     } @else {
-      @for (note of notesService.notes().slice(0, 8); track note.id) {
-        <a [routerLink]="['/notes', note.id]" routerLinkActive="active" class="note-link">
-          {{ note.title || 'Untitled' }}
-        </a>
+
+      @for (
+        note of notesService
+          .notes()
+          .slice(0, 8);
+
+        track note.id
+      ) {
+
+        <div class="recent-note-row">
+
+          <a
+            [routerLink]="[
+              '/notes',
+              note.id
+            ]"
+
+            routerLinkActive="active"
+
+            class="note-link"
+          >
+            {{
+              note.title ||
+              'Untitled'
+            }}
+          </a>
+
+
+          <button
+            type="button"
+
+            class="delete-note-btn"
+
+            title="Delete note"
+
+            (click)="
+              deleteRecentNote(
+                $event,
+                note.id,
+                note.title || 'Untitled'
+              )
+            "
+          >
+            🗑
+          </button>
+
+        </div>
+
       }
+
     }
+
   </nav>
+
 </aside>
