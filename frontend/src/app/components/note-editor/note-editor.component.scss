@@ -67,8 +67,18 @@
 
 .editor-body {
   flex: 1;
-  overflow-y: auto;
   min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+
+  overscroll-behavior: contain;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
 }
 
 .tiptap-surface {
@@ -171,18 +181,380 @@
     }
   }
 }
-:host ::ng-deep .ProseMirror img {
+/* =========================================
+   FREE MOVING + RESIZABLE IMAGE
+========================================= */
+
+:host ::ng-deep .ProseMirror .resizable-image-wrapper {
+  position: relative;
+
   display: block;
-
+  width: fit-content;
   max-width: 100%;
-
-  width: auto;
-
-  height: auto;
-
-  object-fit: contain;
 
   margin: 12px 0;
 
-  border-radius: 6px;
+  user-select: none;
+
+  z-index: 2;
+
+  will-change: transform;
+}
+:host ::ng-deep .ProseMirror .resizable-image-wrapper {
+  position: relative;
+
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+
+  margin-top: 12px;
+  margin-bottom: 12px;
+
+  user-select: none;
+
+  z-index: 2;
+}
+:host ::ng-deep .ProseMirror .resizable-image-wrapper img:active {
+  cursor: grabbing;
+
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+/* Invisible resize area */
+:host ::ng-deep .ProseMirror .image-resize-handle {
+  position: absolute;
+
+  width: 24px;
+  height: 24px;
+
+  right: -5px;
+  bottom: -5px;
+
+  background: transparent;
+  border: none;
+
+  opacity: 0;
+
+  cursor: nwse-resize;
+
+  pointer-events: auto;
+
+  z-index: 10;
+}
+/* =========================================
+   PICTURE TOOLS
+========================================= */
+
+.picture-tools {
+  border-bottom: 1px solid #dbeafe;
+  background: #eff6ff;
+}
+
+.picture-tools-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 4px 10px;
+
+  font-size: 0.7rem;
+  color: #1d4ed8;
+
+  border-bottom: 1px solid #bfdbfe;
+}
+
+.picture-tools-title strong {
+  font-size: 0.8rem;
+  margin-top: 1px;
+}
+
+.picture-tools-content {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+
+  padding: 8px 10px;
+
+  overflow-x: auto;
+}
+
+.picture-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  min-width: max-content;
+}
+
+.picture-group-name {
+  margin-top: 6px;
+
+  text-align: center;
+
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+.picture-separator {
+  width: 1px;
+  background: #cbd5e1;
+}
+
+.picture-style-list {
+  display: flex;
+  gap: 6px;
+}
+
+.picture-style {
+  min-width: 68px;
+
+  padding: 7px 9px;
+
+  border: 2px solid transparent;
+  border-radius: 5px;
+
+  background: #ffffff;
+
+  font-size: 0.72rem;
+
+  cursor: pointer;
+}
+
+.picture-style:hover {
+  background: #f8fafc;
+  border-color: #93c5fd;
+}
+
+.picture-style.active {
+  background: #dbeafe;
+  border-color: #2563eb;
+}
+
+.picture-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  max-width: 220px;
+}
+
+.picture-buttons button {
+  padding: 6px 10px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+
+  background: white;
+
+  font-size: 0.72rem;
+
+  cursor: pointer;
+}
+
+.picture-buttons button:hover {
+  background: #e2e8f0;
+}
+/* =========================================
+   IMAGE PICTURE STYLES
+========================================= */
+
+:host ::ng-deep
+.resizable-image-wrapper
+img.picture-normal {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+:host ::ng-deep
+.resizable-image-wrapper
+img.picture-border {
+  border: 4px solid #475569;
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+:host ::ng-deep
+.resizable-image-wrapper
+img.picture-shadow {
+  border: none;
+  border-radius: 4px;
+
+  box-shadow:
+    0 8px 18px
+    rgba(0, 0, 0, 0.28);
+}
+
+:host ::ng-deep
+.resizable-image-wrapper
+img.picture-rounded {
+  border: none;
+  border-radius: 22px;
+  box-shadow: none;
+}
+
+:host ::ng-deep
+.resizable-image-wrapper
+img.picture-frame {
+  border: 7px solid white;
+  outline: 2px solid #334155;
+
+  padding: 3px;
+
+  border-radius: 2px;
+
+  box-shadow:
+    0 5px 12px
+    rgba(0, 0, 0, 0.22);
+}
+/* =========================================
+   WORD-LIKE PICTURE STYLE THUMBNAILS
+========================================= */
+
+.picture-style {
+  width: 72px;
+  height: 52px;
+
+  padding: 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: white;
+
+  border: 2px solid transparent;
+  border-radius: 3px;
+
+  cursor: pointer;
+}
+
+.picture-style:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.picture-style.active {
+  border-color: #2563eb;
+  background: #dbeafe;
+}
+
+.style-preview {
+  position: relative;
+
+  display: block;
+
+  width: 52px;
+  height: 34px;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #dbeafe 0%,
+      #dbeafe 55%,
+      #86b78c 55%,
+      #86b78c 100%
+    );
+}
+
+/* small sun */
+.preview-sun {
+  position: absolute;
+
+  width: 9px;
+  height: 9px;
+
+  top: 6px;
+  right: 8px;
+
+  background: #facc15;
+  border-radius: 50%;
+}
+
+/* small mountain */
+.preview-mountain {
+  position: absolute;
+
+  left: 5px;
+  bottom: 7px;
+
+  width: 38px;
+  height: 16px;
+
+  background: #5b9279;
+
+  clip-path: polygon(
+    0 100%,
+    25% 35%,
+    42% 70%,
+    63% 20%,
+    100% 100%
+  );
+}
+
+
+/* NORMAL */
+.preview-normal {
+  border: 1px solid #94a3b8;
+}
+
+
+/* BORDER */
+.preview-border {
+  border: 4px solid #64748b;
+}
+
+
+/* SHADOW */
+.preview-shadow {
+  border: 1px solid #94a3b8;
+
+  box-shadow:
+    5px 5px 5px
+    rgba(0, 0, 0, 0.3);
+}
+
+
+/* ROUNDED */
+.preview-rounded {
+  border-radius: 10px;
+}
+
+
+/* FRAME */
+.preview-frame {
+  border: 5px solid white;
+
+  outline: 3px solid #111827;
+
+  box-shadow:
+    0 3px 5px
+    rgba(0, 0, 0, 0.25);
+}
+.toolbar {
+  flex-shrink: 0;
+}
+
+.picture-tools {
+  flex-shrink: 0;
+
+  width: 100%;
+
+  background: #eff6ff;
+  border-bottom: 1px solid #bfdbfe;
+
+  z-index: 20;
+}
+
+.editor-body {
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scroll-behavior: smooth;
 }
