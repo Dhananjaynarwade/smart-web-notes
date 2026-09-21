@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-4z-z!6wf$i!vh8!hv+q_*oe7ik+6_y#0#c+jshc$j4i=di3%by
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    'https://smart-web-notes.onrender.com',
+]
 
 
 # Application definition
