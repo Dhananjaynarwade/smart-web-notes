@@ -30,7 +30,7 @@ export class FolderService {
 
 
   private readonly apiUrl =
-    'http://127.0.0.1:8000/api/folders/';
+  'https://smart-web-notes-backend.onrender.com/api/folders/';
 
 
   // ==========================================

@@ -29,7 +29,7 @@ export class ImageService {
 
 
   private readonly imageApiUrl =
-    'http://127.0.0.1:8000/api/images/';
+'https://smart-web-notes-backend.onrender.com/api/images/';
 
 
   // ==========================================
