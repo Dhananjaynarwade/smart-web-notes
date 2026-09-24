@@ -1,12 +1,9 @@
 import uuid
 
 from django.db import models
+from django.db import IntegrityError, transaction
 from django.utils.text import slugify
 
-
-# ==========================================
-# NOTE
-# ==========================================
 
 class Note(models.Model):
 
@@ -46,46 +43,71 @@ class Note(models.Model):
     )
 
 
-    # ======================================
-    # CREATE UNIQUE SLUG
-    # ======================================
+    def save(
+        self,
+        *args,
+        **kwargs
+    ):
 
-    def save(self, *args, **kwargs):
+        # Existing note already has slug
+        if self.slug:
 
-        if not self.slug:
-
-            base_slug = slugify(
-                self.title or 'untitled-note'
+            return super().save(
+                *args,
+                **kwargs
             )
 
-            if not base_slug:
-                base_slug = 'untitled-note'
 
-            # Keep slug safely below max_length=300
-            base_slug = base_slug[:250]
-
-            # UUID guarantees uniqueness
-            self.slug = (
-                f'{base_slug}-{self.id}'
-            )
-
-        super().save(
-            *args,
-            **kwargs
+        base_slug = slugify(
+            self.title or 'untitled-note'
         )
+
+
+        if not base_slug:
+
+            base_slug = 'untitled-note'
+
+
+        base_slug = base_slug[:280]
+
+        number = 1
+
+
+        while True:
+
+            if number == 1:
+
+                self.slug = base_slug
+
+            else:
+
+                self.slug = (
+                    f'{base_slug}-{number}'
+                )
+
+
+            try:
+
+                with transaction.atomic():
+
+                    return super().save(
+                        *args,
+                        **kwargs
+                    )
+
+
+            except IntegrityError:
+
+                number += 1
 
 
     def __str__(self):
 
         return (
-            self.title
-            or 'Untitled Note'
+            self.title or
+            'Untitled Note'
         )
 
-
-# ==========================================
-# NOTE IMAGE
-# ==========================================
 
 class NoteImage(models.Model):
 
@@ -104,10 +126,6 @@ class NoteImage(models.Model):
             self.image
         )
 
-
-# ==========================================
-# FOLDER
-# ==========================================
 
 class Folder(models.Model):
 
