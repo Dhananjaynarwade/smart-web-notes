@@ -142,7 +142,7 @@
           <a
             [routerLink]="[
               '/notes',
-              note.id
+               note.slug ?? note.id
             ]"
 
             routerLinkActive="active"

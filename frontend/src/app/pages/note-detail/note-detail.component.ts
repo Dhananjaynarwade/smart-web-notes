@@ -521,7 +521,7 @@ private readonly loadNoteEffect =
 
       await this.router.navigate([
         '/notes',
-        savedNote.id
+        savedNote.slug ?? savedNote.id
       ]);
 
       this.showSaveAlert(

@@ -167,7 +167,7 @@
           <a
             [routerLink]="[
               '/notes',
-              note.id
+               note.slug ?? note.id
             ]"
             class="note-card"
           >
