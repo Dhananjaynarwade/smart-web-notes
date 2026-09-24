@@ -10,13 +10,14 @@ import {
 
 import {
   Observable,
+  firstValueFrom,
   map,
   tap
 } from 'rxjs';
 
 
 // ==========================================
-// ANGULAR NOTE MODEL
+// ANGULAR NOTE
 // ==========================================
 
 export interface Note {
@@ -25,9 +26,13 @@ export interface Note {
 
   title: string;
 
+  slug?: string;
+
   content: string;
 
   folder: string;
+
+  createdAt?: string;
 
   updatedAt: string;
 
@@ -35,7 +40,7 @@ export interface Note {
 
 
 // ==========================================
-// DJANGO API NOTE MODEL
+// DJANGO NOTE RESPONSE
 // ==========================================
 
 interface ApiNote {
@@ -43,6 +48,8 @@ interface ApiNote {
   id: string;
 
   title: string;
+
+  slug: string | null;
 
   content: string;
 
@@ -55,38 +62,40 @@ interface ApiNote {
 }
 
 
+// ==========================================
+// NOTES SERVICE
+// ==========================================
+
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
+  constructor() {
+  this.loadNotes();
+}
 
   private readonly http =
     inject(HttpClient);
 
 
   private readonly apiUrl =
-   'https://smart-web-notes-backend.onrender.com/api/notes/';
+    'http://127.0.0.1:8000/api/notes/';
 
 
-  // All notes from Django
+  // ==========================================
+  // NOTES STATE
+  // ==========================================
+
   readonly notes =
     signal<Note[]>([]);
 
 
-  // Tells Angular when Django loading is finished
   readonly loaded =
     signal(false);
 
 
-  constructor() {
-
-    this.loadNotes();
-
-  }
-
-
   // ==========================================
-  // LOAD NOTES FROM DJANGO
+  // LOAD NOTES FROM DJANGO DATABASE
   // ==========================================
 
   loadNotes(): void {
@@ -98,36 +107,43 @@ export class NotesService {
       .get<ApiNote[]>(
         this.apiUrl
       )
-      .subscribe({
+      .pipe(
 
-        next: (data) => {
-
-          const list =
-            data.map(
+        map(
+          apiNotes =>
+            apiNotes.map(
               note =>
                 this.fromApi(note)
-            );
+            )
+        )
 
+      )
+      .subscribe({
+
+        next: notes => {
 
           this.notes.set(
-            list
+            notes
           );
-
 
           this.loaded.set(
             true
           );
 
+          console.log(
+            'Notes loaded from Django:',
+            notes
+          );
+
         },
 
 
-        error: (error) => {
+        error: error => {
 
           console.error(
-            'Failed to load notes:',
+            'Could not load notes from Django:',
             error
           );
-
 
           this.loaded.set(
             true
@@ -141,29 +157,18 @@ export class NotesService {
 
 
   // ==========================================
-  // GET ALL NOTES
-  // ==========================================
-
-  getAll(): Note[] {
-
-    return this.notes();
-
-  }
-
-
-  // ==========================================
-  // GET NOTE BY ID
+  // FIND NOTE
   // ==========================================
 
   getById(
     id: string
   ): Note | undefined {
 
-    return this
-      .notes()
+    return this.notes()
       .find(
         note =>
-          note.id === id
+          note.id === id ||
+          note.slug === id
       );
 
   }
@@ -179,16 +184,78 @@ export class NotesService {
 
     const existing =
       this.notes()
-        .some(
+        .find(
           item =>
             item.id === note.id
         );
 
 
-    const payload = {
+    // ========================================
+    // EXISTING NOTE → PATCH
+    // ========================================
 
-      id:
-        note.id,
+    if (existing) {
+
+      const payload = {
+
+        title:
+          note.title,
+
+        content:
+          note.content,
+
+        folder:
+          note.folder
+
+      };
+
+
+      return this.http
+        .patch<ApiNote>(
+
+          `${this.apiUrl}${note.id}/`,
+
+          payload
+
+        )
+        .pipe(
+
+          map(
+            response =>
+              this.fromApi(
+                response
+              )
+          ),
+
+          tap(
+            savedNote => {
+
+              this.notes.update(
+                notes =>
+                  notes.map(
+                    current =>
+                      current.id ===
+                      savedNote.id
+
+                        ? savedNote
+
+                        : current
+                  )
+              );
+
+            }
+          )
+
+        );
+
+    }
+
+
+    // ========================================
+    // NEW NOTE → POST
+    // ========================================
+
+    const payload = {
 
       title:
         note.title,
@@ -202,56 +269,20 @@ export class NotesService {
     };
 
 
-    // ========================================
-    // UPDATE EXISTING NOTE
-    // ========================================
-
-    if (existing) {
-
-      return this.http
-        .patch<ApiNote>(
-          `${this.apiUrl}${note.id}/`,
-          payload
-        )
-        .pipe(
-
-          map(
-            savedNote =>
-              this.fromApi(
-                savedNote
-              )
-          ),
-
-          tap(
-            savedNote => {
-
-              this.updateSignal(
-                savedNote
-              );
-
-            }
-          )
-
-        );
-
-    }
-
-
-    // ========================================
-    // CREATE NEW NOTE
-    // ========================================
-
     return this.http
       .post<ApiNote>(
+
         this.apiUrl,
+
         payload
+
       )
       .pipe(
 
         map(
-          savedNote =>
+          response =>
             this.fromApi(
-              savedNote
+              response
             )
         ),
 
@@ -259,9 +290,9 @@ export class NotesService {
           savedNote => {
 
             this.notes.update(
-              list => [
+              notes => [
                 savedNote,
-                ...list
+                ...notes
               ]
             );
 
@@ -277,58 +308,26 @@ export class NotesService {
   // DELETE NOTE
   // ==========================================
 
-  delete(
+  async delete(
     id: string
-  ): void {
+  ): Promise<void> {
 
-    this.http
-      .delete(
+    await firstValueFrom(
+
+      this.http.delete<void>(
+
         `${this.apiUrl}${id}/`
+
       )
-      .subscribe({
 
-        next: () => {
+    );
 
-          this.notes.update(
-            list =>
-              list.filter(
-                note =>
-                  note.id !== id
-              )
-          );
-
-        },
-
-
-        error: (error) => {
-
-          console.error(
-            'Failed to delete note:',
-            error
-          );
-
-        }
-
-      });
-
-  }
-
-
-  // ==========================================
-  // UPDATE NOTE INSIDE SIGNAL
-  // ==========================================
-
-  private updateSignal(
-    savedNote: Note
-  ): void {
 
     this.notes.update(
-      list =>
-        list.map(
+      notes =>
+        notes.filter(
           note =>
-            note.id === savedNote.id
-              ? savedNote
-              : note
+            note.id !== id
         )
     );
 
@@ -336,7 +335,7 @@ export class NotesService {
 
 
   // ==========================================
-  // DJANGO FORMAT → ANGULAR FORMAT
+  // DJANGO RESPONSE → ANGULAR NOTE
   // ==========================================
 
   private fromApi(
@@ -351,11 +350,17 @@ export class NotesService {
       title:
         note.title,
 
+      slug:
+        note.slug ?? undefined,
+
       content:
         note.content,
 
       folder:
         note.folder,
+
+      createdAt:
+        note.created_at,
 
       updatedAt:
         note.updated_at

@@ -22,6 +22,7 @@ class NoteSerializer(
         fields = [
             'id',
             'title',
+            'slug',
             'content',
             'folder',
             'created_at',
@@ -29,6 +30,7 @@ class NoteSerializer(
         ]
 
         read_only_fields = [
+            'slug',
             'created_at',
             'updated_at',
         ]

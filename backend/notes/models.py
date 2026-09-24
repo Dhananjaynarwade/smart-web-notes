@@ -4,6 +4,10 @@ from django.db import models
 from django.utils.text import slugify
 
 
+# ==========================================
+# NOTE
+# ==========================================
+
 class Note(models.Model):
 
     id = models.UUIDField(
@@ -17,10 +21,6 @@ class Note(models.Model):
         blank=True
     )
 
-    # Readable URL name
-    # Example:
-    # DevOps Interview Notes
-    # -> devops-interview-notes
     slug = models.SlugField(
         max_length=300,
         unique=True,
@@ -45,44 +45,47 @@ class Note(models.Model):
         auto_now=True
     )
 
+
+    # ======================================
+    # CREATE UNIQUE SLUG
+    # ======================================
+
     def save(self, *args, **kwargs):
 
-        # Create slug only once
         if not self.slug:
 
             base_slug = slugify(
                 self.title or 'untitled-note'
             )
 
-            slug = base_slug
-            number = 2
+            if not base_slug:
+                base_slug = 'untitled-note'
 
-            # Handle duplicate note titles
-            while Note.objects.filter(
-                slug=slug
-            ).exclude(
-                pk=self.pk
-            ).exists():
+            # Keep slug safely below max_length=300
+            base_slug = base_slug[:250]
 
-                slug = (
-                    f'{base_slug}-{number}'
-                )
-
-                number += 1
-
-            self.slug = slug
+            # UUID guarantees uniqueness
+            self.slug = (
+                f'{base_slug}-{self.id}'
+            )
 
         super().save(
             *args,
             **kwargs
         )
 
+
     def __str__(self):
+
         return (
             self.title
             or 'Untitled Note'
         )
 
+
+# ==========================================
+# NOTE IMAGE
+# ==========================================
 
 class NoteImage(models.Model):
 
@@ -94,11 +97,17 @@ class NoteImage(models.Model):
         auto_now_add=True
     )
 
+
     def __str__(self):
+
         return str(
             self.image
         )
 
+
+# ==========================================
+# FOLDER
+# ==========================================
 
 class Folder(models.Model):
 
@@ -111,5 +120,7 @@ class Folder(models.Model):
         auto_now_add=True
     )
 
+
     def __str__(self):
+
         return self.name

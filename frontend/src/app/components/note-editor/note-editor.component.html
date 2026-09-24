@@ -216,6 +216,22 @@
     </span>
   </button>
 
+  <button
+  type="button"
+  (click)="imageInput.click()"
+  title="Add screenshot"
+>
+  📷
+</button>
+
+<input
+  #imageInput
+  type="file"
+  accept="image/*"
+  hidden
+  (change)="uploadImage($event)"
+>
+
 </div>
 
           </div>

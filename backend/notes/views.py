@@ -1,3 +1,8 @@
+import uuid
+
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+
 from rest_framework import viewsets
 
 from .models import (
@@ -26,6 +31,76 @@ class NoteViewSet(
     serializer_class = (
         NoteSerializer
     )
+
+    # New readable URL lookup
+    lookup_field = 'slug'
+
+
+    def get_object(self):
+
+        queryset = self.filter_queryset(
+            self.get_queryset()
+        )
+
+        lookup_value = self.kwargs.get(
+            self.lookup_field
+        )
+
+
+        if not lookup_value:
+            raise Http404
+
+
+        # ==========================================
+        # FIRST TRY SLUG
+        # ==========================================
+
+        note = queryset.filter(
+            slug=lookup_value
+        ).first()
+
+
+        if note is not None:
+
+            self.check_object_permissions(
+                self.request,
+                note
+            )
+
+            return note
+
+
+        # ==========================================
+        # FALLBACK TO OLD UUID
+        # ==========================================
+
+        try:
+
+            uuid.UUID(
+                str(lookup_value)
+            )
+
+        except (
+            ValueError,
+            TypeError
+        ):
+
+            raise Http404
+
+
+        note = get_object_or_404(
+            queryset,
+            pk=lookup_value
+        )
+
+
+        self.check_object_permissions(
+            self.request,
+            note
+        )
+
+
+        return note
 
 
 class NoteImageViewSet(
@@ -98,7 +173,6 @@ class FolderViewSet(
         )
 
 
-        # Move notes back to All Notes
         Note.objects.filter(
             folder=old_name
         ).update(

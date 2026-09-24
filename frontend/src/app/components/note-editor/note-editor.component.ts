@@ -2,7 +2,6 @@ import {
   Component,
   effect,
   HostListener,
-  inject,
   input,
   OnDestroy,
   output,
@@ -34,7 +33,9 @@ import TableRow from '@tiptap/extension-table-row';
 import { TiptapEditorDirective } from 'ngx-tiptap';
 
 import { ImageService } from '../../services/image.service';
-
+import {
+  inject
+} from '@angular/core';
 
 /* =========================================================
    KEYBOARD SHORTCUTS
@@ -180,6 +181,152 @@ const SourceRef = Mark.create({
 })
 export class NoteEditorComponent
   implements OnDestroy {
+
+  /* =========================================================
+     UPLOAD IMAGE FROM LAPTOP / PHONE
+  ========================================================= */
+
+  uploadImage(
+    event: Event
+  ): void {
+
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+
+    if (!file) {
+      return;
+    }
+
+
+    if (
+      !file.type.startsWith('image/')
+    ) {
+
+      alert(
+        'Please select an image.'
+      );
+
+      input.value = '';
+
+      return;
+    }
+
+
+    const position =
+      this.lastCursorPosition ??
+      this.editor.state.selection.from;
+
+
+    void (async () => {
+
+      try {
+
+        this.uploading.set(
+          true
+        );
+
+
+        const uploaded =
+          await this
+            .imageService
+            .upload(
+              file
+            );
+
+
+        const maxPosition =
+          this.editor
+            .state
+            .doc
+            .content
+            .size;
+
+
+        const insertPosition =
+          Math.min(
+            position,
+            maxPosition
+          );
+
+
+        this.editor
+          .chain()
+          .insertContentAt(
+
+            insertPosition,
+
+            [
+              {
+                type:
+                  'image',
+
+                attrs: {
+                  src:
+                    uploaded.url
+                }
+              },
+
+              {
+                type:
+                  'paragraph',
+
+                content:
+                  []
+              }
+            ],
+
+            {
+              updateSelection:
+                true
+            }
+
+          )
+          .focus()
+          .run();
+
+
+        this.lastCursorPosition =
+          this.editor
+            .state
+            .selection
+            .from;
+
+
+        console.log(
+          'Image uploaded:',
+          uploaded.url
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          'Image upload failed:',
+          error
+        );
+
+        alert(
+          'Image upload failed.'
+        );
+
+
+      } finally {
+
+        this.uploading.set(
+          false
+        );
+
+        input.value = '';
+
+      }
+
+    })();
+
+  }
 
 
   /* =========================================================
