@@ -10,16 +10,14 @@
       Menu
     </h3>
 
-    <a
-      routerLink="/dashboard"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{
-          (click)="folderService.selectFolder('All Notes')"
-      }"
-    >
-      Dashboard
-    </a>
-
+<a
+  routerLink="/dashboard"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  (click)="folderService.selectFolder('All Notes')"
+>
+  Dashboard
+</a>
     <a
       routerLink="/notes/new"
       routerLinkActive="active"
