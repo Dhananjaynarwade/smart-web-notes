@@ -1,32 +1,291 @@
+/* =========================================
+   MAIN LAYOUT
+========================================= */
+
+:host {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+}
+
+
 .layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  background: #f1f5f9;
-}
 
-.body {
-  display: flex;
-  flex: 1;
+  width: 100%;
+  height: 100dvh;
+
+  background: #f1f5f9;
+
   overflow: hidden;
 }
 
+
+/* =========================================
+   BODY
+========================================= */
+
+.body {
+  position: relative;
+
+  display: flex;
+
+  flex: 1;
+
+  min-width: 0;
+  min-height: 0;
+
+  overflow: hidden;
+}
+
+
+/* =========================================
+   SIDEBAR - LAPTOP / DESKTOP
+========================================= */
+
+.body app-sidebar {
+  width: 270px;
+
+  flex:
+    0 0 270px;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  opacity: 1;
+
+  transform:
+    translateX(0);
+
+  transition:
+    width 0.3s ease,
+    flex-basis 0.3s ease,
+    transform 0.3s ease,
+    opacity 0.2s ease;
+
+  will-change:
+    width,
+    transform,
+    opacity;
+}
+
+
+/* =========================================
+   SIDEBAR CLOSED - LAPTOP
+========================================= */
+
+.body.sidebar-collapsed
+app-sidebar {
+  width: 0;
+
+  flex-basis: 0;
+
+  opacity: 0;
+
+  transform:
+    translateX(-18px);
+
+  pointer-events: none;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
 .content {
   flex: 1;
+
+  width: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
   padding: 1.25rem;
+
+  box-sizing: border-box;
+
+  overflow-x: hidden;
   overflow-y: auto;
+
+  transition:
+    padding 0.25s ease;
 }
+
+
+/* =========================================
+   SIDEBAR BACKDROP
+========================================= */
+
+.sidebar-backdrop {
+  display: none;
+}
+
+
+/* =========================================
+   SIDEBAR TOGGLE BUTTON
+========================================= */
+
+.sidebar-toggle {
+  position: fixed;
+
+  top: 7px;
+  left: 11px;
+
+  z-index: 3000;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  padding: 0;
+
+  border:
+    1px solid #cbd5e1;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #334155;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 2px 8px
+    rgba(15, 23, 42, 0.12);
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* =========================================
+   HAMBURGER LINES
+========================================= */
+
+.hamburger-line {
+  display: block;
+
+  width: 20px;
+  height: 2px;
+
+  flex-shrink: 0;
+
+  border-radius: 20px;
+
+  background: #334155;
+
+  transform-origin: center;
+
+  transition:
+    transform 0.3s ease,
+    opacity 0.2s ease,
+    width 0.3s ease,
+    background 0.2s ease;
+}
+
+
+/* =========================================
+   HAMBURGER HOVER
+========================================= */
+
+.sidebar-toggle:hover {
+  background: #eff6ff;
+
+  border-color: #93c5fd;
+
+  box-shadow:
+    0 4px 12px
+    rgba(37, 99, 235, 0.18);
+}
+
+
+.sidebar-toggle:hover
+.hamburger-line {
+  background: #2563eb;
+}
+
+
+.sidebar-toggle:active {
+  transform:
+    scale(0.94);
+}
+
+
+/* =========================================
+   OPEN STATE
+   ☰ -> X
+========================================= */
+
+.sidebar-toggle.open {
+  background: #eff6ff;
+
+  border-color: #60a5fa;
+
+  box-shadow:
+    0 4px 14px
+    rgba(37, 99, 235, 0.2);
+}
+
+
+.sidebar-toggle.open
+.line-1 {
+  transform:
+    translateY(6px)
+    rotate(45deg);
+
+  background: #2563eb;
+}
+
+
+.sidebar-toggle.open
+.line-2 {
+  width: 0;
+
+  opacity: 0;
+
+  transform:
+    scaleX(0);
+}
+
+
+.sidebar-toggle.open
+.line-3 {
+  transform:
+    translateY(-6px)
+    rotate(-45deg);
+
+  background: #2563eb;
+}
+
+
 /* =========================================
    FOLDER FILTER
 ========================================= */
 
 .folder-filter {
-  margin: 28px 0 22px;
+  margin:
+    28px 0 22px;
 }
 
 
 .folder-filter h2 {
-  margin: 0 0 14px;
+  margin:
+    0 0 14px;
 
   color: #0f172a;
 
@@ -59,9 +318,11 @@
 
   gap: 6px;
 
-  padding: 8px 14px;
+  padding:
+    8px 14px;
 
-  border: 1px solid #cbd5e1;
+  border:
+    1px solid #cbd5e1;
 
   border-radius: 20px;
 
@@ -97,7 +358,8 @@
 
   color: #2563eb;
 
-  transform: translateY(-1px);
+  transform:
+    translateY(-1px);
 
   box-shadow:
     0 4px 10px
@@ -124,4 +386,287 @@
 
 .folder-btn.active::before {
   content: '📂';
+}
+
+
+/* =========================================
+   TABLET / PHONE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .layout {
+    height: 100dvh;
+  }
+
+
+  .body {
+    width: 100%;
+  }
+
+
+  /* =====================================
+     MOBILE SIDEBAR DRAWER
+  ====================================== */
+
+  .body app-sidebar {
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    z-index: 1100;
+
+    /*
+      IMPORTANT:
+      keep drawer width even while hidden
+      so slide animation works.
+    */
+
+    width:
+      min(82vw, 300px);
+
+    max-width: 300px;
+
+    flex:
+      0 0 auto;
+
+    background: #ffffff;
+
+    opacity: 0;
+
+    transform:
+      translateX(-105%);
+
+    pointer-events: none;
+
+    box-shadow:
+      8px 0 30px
+      rgba(15, 23, 42, 0.22);
+
+    transition:
+      transform 0.3s
+      cubic-bezier(
+        0.4,
+        0,
+        0.2,
+        1
+      ),
+      opacity 0.2s ease;
+  }
+
+
+  /*
+    Override desktop collapsed width
+  */
+
+  .body.sidebar-collapsed
+  app-sidebar {
+    width:
+      min(82vw, 300px);
+
+    flex-basis: auto;
+
+    opacity: 0;
+
+    transform:
+      translateX(-105%);
+
+    pointer-events: none;
+  }
+
+
+  /* =====================================
+     OPEN MOBILE SIDEBAR
+  ====================================== */
+
+  .body.sidebar-open
+  app-sidebar {
+    width:
+      min(82vw, 300px);
+
+    opacity: 1;
+
+    transform:
+      translateX(0);
+
+    pointer-events: auto;
+  }
+
+
+  /* =====================================
+     CONTENT FULL WIDTH
+  ====================================== */
+
+  .content {
+    width: 100%;
+
+    padding:
+      0.75rem;
+  }
+
+
+  /* =====================================
+     DARK BACKDROP
+  ====================================== */
+
+  .sidebar-backdrop {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+
+    border: 0;
+
+    background:
+      rgba(15, 23, 42, 0.45);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    cursor: pointer;
+
+    backdrop-filter:
+      blur(1px);
+
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+  }
+
+
+  .body.sidebar-open
+  .sidebar-backdrop {
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+  }
+
+
+  /* =====================================
+     MOBILE TOGGLE
+  ====================================== */
+
+  .sidebar-toggle {
+    top: 9px;
+    left: 9px;
+
+    width: 40px;
+    height: 40px;
+
+    border-radius: 8px;
+  }
+
+
+  .hamburger-line {
+    width: 19px;
+  }
+
+
+  /* =====================================
+     MOBILE FOLDERS
+  ====================================== */
+
+  .folder-filter {
+    margin:
+      20px 0 16px;
+  }
+
+
+  .folder-filter h2 {
+    font-size: 18px;
+  }
+
+
+  .folder-buttons {
+    gap: 8px;
+  }
+
+
+  .folder-btn {
+    padding:
+      7px 12px;
+
+    font-size: 12px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL PHONE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .content {
+    padding:
+      0.5rem;
+  }
+
+
+  .body app-sidebar,
+  .body.sidebar-collapsed app-sidebar,
+  .body.sidebar-open app-sidebar {
+    width: 85vw;
+
+    max-width: 285px;
+  }
+
+
+  .folder-buttons {
+    flex-wrap: nowrap;
+
+    overflow-x: auto;
+
+    padding-bottom: 5px;
+
+    scrollbar-width: none;
+  }
+
+
+  .folder-buttons::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  .folder-btn {
+    flex:
+      0 0 auto;
+  }
+
+}
+
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+
+  .body app-sidebar,
+  .sidebar-toggle,
+  .hamburger-line,
+  .sidebar-backdrop,
+  .content,
+  .folder-btn {
+    transition: none;
+  }
+
 }

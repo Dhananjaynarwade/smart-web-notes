@@ -1,9 +1,77 @@
 <div class="layout">
+
   <app-navbar />
-  <div class="body">
+
+
+  <!-- =====================================
+       SIDEBAR TOGGLE
+  ====================================== -->
+
+  <button
+    type="button"
+    class="sidebar-toggle"
+
+    [class.open]="sidebarOpen()"
+
+    [attr.aria-expanded]="sidebarOpen()"
+
+    aria-label="Show or hide sidebar"
+
+    (click)="toggleSidebar()"
+  >
+
+    <span class="hamburger-line line-1"></span>
+    <span class="hamburger-line line-2"></span>
+    <span class="hamburger-line line-3"></span>
+
+  </button>
+
+
+  <!-- =====================================
+       MAIN BODY
+  ====================================== -->
+
+  <div
+    class="body"
+
+    [class.sidebar-open]="sidebarOpen()"
+
+    [class.sidebar-collapsed]="!sidebarOpen()"
+  >
+
+
+    <!-- SIDEBAR -->
+
     <app-sidebar />
+
+
+    <!-- =====================================
+         MOBILE BACKDROP
+    ====================================== -->
+
+    @if (sidebarOpen()) {
+
+      <button
+        type="button"
+        class="sidebar-backdrop"
+        aria-label="Close sidebar"
+        (click)="closeSidebar()"
+      >
+      </button>
+
+    }
+
+
+    <!-- =====================================
+         PAGE CONTENT
+    ====================================== -->
+
     <main class="content">
+
       <router-outlet />
+
     </main>
+
   </div>
+
 </div>

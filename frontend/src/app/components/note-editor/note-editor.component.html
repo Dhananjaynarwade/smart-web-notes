@@ -1,5 +1,9 @@
 <div class="editor">
 
+  <!-- =========================================
+       NOTE TITLE
+  ========================================== -->
+
   <input
     class="title-input"
     type="text"
@@ -8,313 +12,540 @@
     (ngModelChange)="onTitleInput($event)"
   />
 
+
   <!-- =========================================
        NORMAL TEXT TOOLBAR
   ========================================== -->
-  <div class="toolbar">
 
-    <button
-      type="button"
-      [class.active]="isActive('bold')"
-      (click)="cmd('bold')"
-      title="Bold (Ctrl+B)"
+  <div class="toolbar-wrapper">
+
+    <div
+      class="toolbar"
+      role="toolbar"
+      aria-label="Note formatting toolbar"
     >
-      <b>B</b>
-    </button>
 
-    <button
-      type="button"
-      [class.active]="isActive('italic')"
-      (click)="cmd('italic')"
-      title="Italic (Ctrl+I)"
-    >
-      <i>I</i>
-    </button>
+      <!-- TEXT STYLE -->
 
-    <button
-      type="button"
-      [class.active]="isActive('underline')"
-      (click)="cmd('underline')"
-      title="Underline (Ctrl+U)"
-    >
-      <u>U</u>
-    </button>
+      <div class="toolbar-group">
 
-    <span class="sep"></span>
+        <button
+          type="button"
+          [class.active]="isActive('bold')"
+          (click)="cmd('bold')"
+          title="Bold (Ctrl+B)"
+        >
+          <b>B</b>
+        </button>
 
-    <button
-      type="button"
-      [class.active]="isActive('heading', { level: 1 })"
-      (click)="cmd('h1')"
-    >
-      H1
-    </button>
 
-    <button
-      type="button"
-      [class.active]="isActive('heading', { level: 2 })"
-      (click)="cmd('h2')"
-    >
-      H2
-    </button>
+        <button
+          type="button"
+          [class.active]="isActive('italic')"
+          (click)="cmd('italic')"
+          title="Italic (Ctrl+I)"
+        >
+          <i>I</i>
+        </button>
 
-    <span class="sep"></span>
 
-    <button
-      type="button"
-      [class.active]="isActive('bulletList')"
-      (click)="cmd('bullet')"
-    >
-      • List
-    </button>
+        <button
+          type="button"
+          [class.active]="isActive('underline')"
+          (click)="cmd('underline')"
+          title="Underline (Ctrl+U)"
+        >
+          <u>U</u>
+        </button>
 
-    <button
-      type="button"
-      [class.active]="isActive('orderedList')"
-      (click)="cmd('ordered')"
-    >
-      1. List
-    </button>
+      </div>
 
-    <span class="sep"></span>
 
-    <button
-      type="button"
-      [class.active]="isActive('link')"
-      (click)="cmd('link')"
-    >
-      Link
-    </button>
+      <span class="sep"></span>
 
-    <button
-      type="button"
-      [class.active]="isActive('codeBlock')"
-      (click)="cmd('code')"
-    >
-      Code
-    </button>
 
-    <button
-      type="button"
-      (click)="cmd('table')"
-    >
-      Table
-    </button>
+      <!-- HEADINGS -->
 
-    <span class="sep"></span>
+      <div class="toolbar-group">
 
-    <button
-      type="button"
-      (click)="cmd('undo')"
-    >
-      ↩
-    </button>
+        <button
+          type="button"
+          [class.active]="
+            isActive(
+              'heading',
+              { level: 1 }
+            )
+          "
+          (click)="cmd('h1')"
+          title="Heading 1"
+        >
+          H1
+        </button>
 
-    <button
-      type="button"
-      (click)="cmd('redo')"
-    >
-      ↪
-    </button>
 
-    @if (uploading()) {
-      <span class="upload-hint">
-        Uploading image...
-      </span>
-    }
+        <button
+          type="button"
+          [class.active]="
+            isActive(
+              'heading',
+              { level: 2 }
+            )
+          "
+          (click)="cmd('h2')"
+          title="Heading 2"
+        >
+          H2
+        </button>
+
+      </div>
+
+
+      <span class="sep"></span>
+
+
+      <!-- LISTS -->
+
+      <div class="toolbar-group">
+
+        <button
+          type="button"
+          [class.active]="
+            isActive('bulletList')
+          "
+          (click)="cmd('bullet')"
+          title="Bullet list"
+        >
+          • List
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="
+            isActive('orderedList')
+          "
+          (click)="cmd('ordered')"
+          title="Numbered list"
+        >
+          1. List
+        </button>
+
+      </div>
+
+
+      <span class="sep"></span>
+
+
+      <!-- INSERT TOOLS -->
+
+      <div class="toolbar-group">
+
+        <button
+          type="button"
+          [class.active]="isActive('link')"
+          (click)="cmd('link')"
+          title="Insert link"
+        >
+          Link
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="
+            isActive('codeBlock')
+          "
+          (click)="cmd('code')"
+          title="Code block"
+        >
+          Code
+        </button>
+
+
+        <button
+          type="button"
+          (click)="cmd('table')"
+          title="Insert table"
+        >
+          Table
+        </button>
+
+
+        <!-- ADD IMAGE -->
+
+        <button
+          type="button"
+          class="image-upload-btn"
+          (click)="imageInput.click()"
+          title="Add image or screenshot"
+        >
+          📷
+        </button>
+
+
+        <input
+          #imageInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="uploadImage($event)"
+        />
+
+      </div>
+
+
+      <span class="sep"></span>
+
+
+      <!-- HISTORY -->
+
+      <div class="toolbar-group">
+
+        <button
+          type="button"
+          (click)="cmd('undo')"
+          title="Undo"
+        >
+          ↩
+        </button>
+
+
+        <button
+          type="button"
+          (click)="cmd('redo')"
+          title="Redo"
+        >
+          ↪
+        </button>
+
+      </div>
+
+
+      @if (uploading()) {
+
+        <span class="upload-hint">
+          Uploading image...
+        </span>
+
+      }
+
+    </div>
 
   </div>
 
 
   <!-- =========================================
        PICTURE TOOLS
-       MUST BE BEFORE editor-body
   ========================================== -->
+
   @if (imageSelected()) {
 
-   <div
-  class="picture-tools"
-  (mousedown)="$event.preventDefault()"
->
+    <div
+      class="picture-tools"
+      (mousedown)="$event.preventDefault()"
+    >
 
       <div class="picture-tools-title">
-        <span>PICTURE TOOLS</span>
-        <strong>FORMAT</strong>
+
+        <span>
+          PICTURE TOOLS
+        </span>
+
+        <strong>
+          FORMAT
+        </strong>
+
       </div>
 
-      <div class="picture-tools-content">
 
-        <!-- PICTURE STYLES -->
-        <div class="picture-group">
+      <div class="picture-tools-scroll">
 
-          <div class="picture-style-list">
+        <div class="picture-tools-content">
 
-          <div class="picture-style-list">
 
-  <button
-    type="button"
-    class="picture-style"
-    [class.active]="isPictureStyle('normal')"
-    (click)="setPictureStyle('normal')"
-    title="Normal"
-  >
-    <span class="style-preview preview-normal">
-      <span class="preview-sun"></span>
-      <span class="preview-mountain"></span>
-    </span>
-  </button>
+          <!-- =====================================
+               PICTURE STYLES
+          ====================================== -->
 
-  <button
-    type="button"
-    class="picture-style"
-    [class.active]="isPictureStyle('border')"
-    (click)="setPictureStyle('border')"
-    title="Border"
-  >
-    <span class="style-preview preview-border">
-      <span class="preview-sun"></span>
-      <span class="preview-mountain"></span>
-    </span>
-  </button>
+          <div class="picture-group">
 
-  <button
-    type="button"
-    class="picture-style"
-    [class.active]="isPictureStyle('shadow')"
-    (click)="setPictureStyle('shadow')"
-    title="Shadow"
-  >
-    <span class="style-preview preview-shadow">
-      <span class="preview-sun"></span>
-      <span class="preview-mountain"></span>
-    </span>
-  </button>
+            <div class="picture-style-list">
 
-  <button
-    type="button"
-    class="picture-style"
-    [class.active]="isPictureStyle('rounded')"
-    (click)="setPictureStyle('rounded')"
-    title="Rounded"
-  >
-    <span class="style-preview preview-rounded">
-      <span class="preview-sun"></span>
-      <span class="preview-mountain"></span>
-    </span>
-  </button>
 
-  <button
-    type="button"
-    class="picture-style"
-    [class.active]="isPictureStyle('frame')"
-    (click)="setPictureStyle('frame')"
-    title="Frame"
-  >
-    <span class="style-preview preview-frame">
-      <span class="preview-sun"></span>
-      <span class="preview-mountain"></span>
-    </span>
-  </button>
+              <button
+                type="button"
+                class="picture-style"
+                [class.active]="
+                  isPictureStyle('normal')
+                "
+                (click)="
+                  setPictureStyle('normal')
+                "
+                title="Normal"
+              >
 
-  <button
-  type="button"
-  (click)="imageInput.click()"
-  title="Add screenshot"
->
-  📷
-</button>
+                <span
+                  class="
+                    style-preview
+                    preview-normal
+                  "
+                >
+                  <span
+                    class="preview-sun"
+                  ></span>
 
-<input
-  #imageInput
-  type="file"
-  accept="image/*"
-  hidden
-  (change)="uploadImage($event)"
->
+                  <span
+                    class="preview-mountain"
+                  ></span>
+                </span>
 
-</div>
+              </button>
+
+
+              <button
+                type="button"
+                class="picture-style"
+                [class.active]="
+                  isPictureStyle('border')
+                "
+                (click)="
+                  setPictureStyle('border')
+                "
+                title="Border"
+              >
+
+                <span
+                  class="
+                    style-preview
+                    preview-border
+                  "
+                >
+                  <span
+                    class="preview-sun"
+                  ></span>
+
+                  <span
+                    class="preview-mountain"
+                  ></span>
+                </span>
+
+              </button>
+
+
+              <button
+                type="button"
+                class="picture-style"
+                [class.active]="
+                  isPictureStyle('shadow')
+                "
+                (click)="
+                  setPictureStyle('shadow')
+                "
+                title="Shadow"
+              >
+
+                <span
+                  class="
+                    style-preview
+                    preview-shadow
+                  "
+                >
+                  <span
+                    class="preview-sun"
+                  ></span>
+
+                  <span
+                    class="preview-mountain"
+                  ></span>
+                </span>
+
+              </button>
+
+
+              <button
+                type="button"
+                class="picture-style"
+                [class.active]="
+                  isPictureStyle('rounded')
+                "
+                (click)="
+                  setPictureStyle('rounded')
+                "
+                title="Rounded"
+              >
+
+                <span
+                  class="
+                    style-preview
+                    preview-rounded
+                  "
+                >
+                  <span
+                    class="preview-sun"
+                  ></span>
+
+                  <span
+                    class="preview-mountain"
+                  ></span>
+                </span>
+
+              </button>
+
+
+              <button
+                type="button"
+                class="picture-style"
+                [class.active]="
+                  isPictureStyle('frame')
+                "
+                (click)="
+                  setPictureStyle('frame')
+                "
+                title="Frame"
+              >
+
+                <span
+                  class="
+                    style-preview
+                    preview-frame
+                  "
+                >
+                  <span
+                    class="preview-sun"
+                  ></span>
+
+                  <span
+                    class="preview-mountain"
+                  ></span>
+                </span>
+
+              </button>
+
+            </div>
+
+
+            <div class="picture-group-name">
+              Picture Styles
+            </div>
 
           </div>
 
-          <div class="picture-group-name">
-            Picture Styles
+
+          <span
+            class="picture-separator"
+          ></span>
+
+
+          <!-- =====================================
+               ARRANGE
+          ====================================== -->
+
+          <div class="picture-group">
+
+            <div class="picture-buttons">
+
+              <button
+                type="button"
+                [class.active]="
+                  isImageAlign('left')
+                "
+                (click)="
+                  setImageAlign('left')
+                "
+                title="Align Left"
+              >
+                ← Left
+              </button>
+
+
+              <button
+                type="button"
+                [class.active]="
+                  isImageAlign('center')
+                "
+                (click)="
+                  setImageAlign('center')
+                "
+                title="Align Center"
+              >
+                Center
+              </button>
+
+
+              <button
+                type="button"
+                [class.active]="
+                  isImageAlign('right')
+                "
+                (click)="
+                  setImageAlign('right')
+                "
+                title="Align Right"
+              >
+                Right →
+              </button>
+
+
+              <button
+                type="button"
+                title="Move image up"
+              >
+                ↑ Up
+              </button>
+
+
+              <button
+                type="button"
+                title="Move image down"
+              >
+                ↓ Down
+              </button>
+
+            </div>
+
+
+            <div class="picture-group-name">
+              Arrange
+            </div>
+
           </div>
 
-        </div>
+
+          <span
+            class="picture-separator"
+          ></span>
 
 
-        <span class="picture-separator"></span>
+          <!-- =====================================
+               SIZE
+          ====================================== -->
+
+          <div class="picture-group">
+
+            <div class="picture-buttons">
+
+              <button
+                type="button"
+                title="Reset image size"
+              >
+                Reset Size
+              </button>
 
 
-        <!-- ARRANGE -->
-        <div class="picture-group">
+              <button
+                type="button"
+                title="Delete image"
+              >
+                Delete
+              </button>
 
-          <div class="picture-buttons">
-
-        <button
-  type="button"
-  [class.active]="isImageAlign('left')"
-  (click)="setImageAlign('left')"
-  title="Align Left"
->
-  ← Left
-</button>
-
-<button
-  type="button"
-  [class.active]="isImageAlign('center')"
-  (click)="setImageAlign('center')"
-  title="Align Center"
->
-  Center
-</button>
-
-<button
-  type="button"
-  [class.active]="isImageAlign('right')"
-  (click)="setImageAlign('right')"
-  title="Align Right"
->
-  Right →
-</button>
-
-            <button type="button">
-              ↑ Up
-            </button>
-
-            <button type="button">
-              ↓ Down
-            </button>
-
-          </div>
-
-          <div class="picture-group-name">
-            Arrange
-          </div>
-
-        </div>
+            </div>
 
 
-        <span class="picture-separator"></span>
+            <div class="picture-group-name">
+              Size
+            </div>
 
-
-        <!-- SIZE -->
-        <div class="picture-group">
-
-          <div class="picture-buttons">
-
-            <button type="button">
-              Reset Size
-            </button>
-
-            <button type="button">
-              Delete
-            </button>
-
-          </div>
-
-          <div class="picture-group-name">
-            Size
           </div>
 
         </div>
@@ -328,8 +559,8 @@
 
   <!-- =========================================
        EDITOR CONTENT
-       MUST COME LAST
   ========================================== -->
+
   <div class="editor-body">
 
     <tiptap-editor

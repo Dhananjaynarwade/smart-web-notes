@@ -1,14 +1,23 @@
+/* =========================================
+   SIDEBAR
+   LIGHT WITH SLIGHT DARK CONTRAST
+========================================= */
 .sidebar {
   width: 240px;
   min-width: 240px;
   height: 100%;
 
-  background: #f8fafc;
-  border-right: 1px solid #e2e8f0;
+  background: #020501;
 
-  padding: 1rem 0;
+  border-right:
+    1px solid #1f2937;
+
+  padding:
+    1rem 0;
 
   overflow-y: auto;
+
+  color: #e2e8f0;
 }
 
 
@@ -17,43 +26,76 @@
 ========================================= */
 
 .nav-section {
-  padding: 0 0.75rem;
-  margin-bottom: 1.25rem;
+  padding:
+    0 0.75rem;
+
+  margin-bottom:
+    1.25rem;
+
 
   h3 {
-    margin: 0 0 0.5rem 0.5rem;
+    margin:
+      0 0
+      0.5rem
+      0.5rem;
 
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size:
+      0.7rem;
 
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-weight:
+      700;
 
-    color: #64748b;
+    text-transform:
+      uppercase;
+
+    letter-spacing:
+      0.06em;
+
+    color: #475569;
   }
+
 
   a {
     display: block;
 
-    padding: 0.45rem 0.75rem;
+    padding:
+      0.45rem
+      0.75rem;
 
-    border-radius: 6px;
+    border-radius:
+      6px;
 
     color: #334155;
-    text-decoration: none;
 
-    font-size: 0.875rem;
+    text-decoration:
+      none;
+
+    font-size:
+      0.875rem;
+
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
+
 
     &:hover {
-      background: #e2e8f0;
+      background: #dfe6ee;
+
+      color: #1d4ed8;
+
+      transform:
+        translateX(2px);
     }
+
 
     &.active {
       background: #dbeafe;
 
       color: #1d4ed8;
 
-      font-weight: 500;
+      font-weight:
+        600;
     }
   }
 }
@@ -67,27 +109,39 @@
   width: 100%;
 
   display: flex;
+
   align-items: center;
 
   gap: 7px;
 
-  margin: 4px 0 10px;
+  margin:
+    4px 0
+    10px;
 
-  padding: 8px 11px;
+  padding:
+    8px 11px;
 
-  border: 1px dashed #94a3b8;
-  border-radius: 7px;
+  border:
+    1px dashed #94a3b8;
+
+  border-radius:
+    7px;
 
   background: #f8fafc;
 
-  color: #475569;
+  color: #334155;
 
-  font-size: 13px;
-  font-weight: 600;
+  font-size:
+    13px;
 
-  text-align: left;
+  font-weight:
+    600;
 
-  cursor: pointer;
+  text-align:
+    left;
+
+  cursor:
+    pointer;
 
   transition:
     background 0.2s ease,
@@ -98,13 +152,14 @@
 
 
 .create-folder-btn:hover {
-  background: #eff6ff;
+  background: #e2e8f0;
 
   border-color: #3b82f6;
 
-  color: #2563eb;
+  color: #1d4ed8;
 
-  transform: translateX(2px);
+  transform:
+    translateX(2px);
 }
 
 
@@ -116,75 +171,104 @@
   position: relative;
 
   display: flex;
+
   align-items: center;
 
   width: 100%;
 
-  margin-bottom: 4px;
+  margin-bottom:
+    4px;
 }
 
 
-.folder-row .folder-link {
+/* =========================================
+   FOLDER LINK
+========================================= */
+
+.folder-row
+.folder-link {
   width: 100%;
 
   display: flex;
+
   align-items: center;
 
   gap: 8px;
 
-  padding: 8px 72px 8px 10px;
+  padding:
+    8px 72px
+    8px 10px;
 
   margin: 0;
 
-  border-radius: 7px;
+  border-radius:
+    7px;
 
-  color: #475569;
+  color: #334155;
 
-  text-decoration: none;
+  text-decoration:
+    none;
 
-  font-size: 13px;
-  font-weight: 500;
+  font-size:
+    13px;
 
-  box-sizing: border-box;
+  font-weight:
+    500;
 
-  white-space: nowrap;
+  box-sizing:
+    border-box;
 
-  overflow: hidden;
+  white-space:
+    nowrap;
 
-  text-overflow: ellipsis;
+  overflow:
+    hidden;
+
+  text-overflow:
+    ellipsis;
 
   transition:
     background 0.2s ease,
-    color 0.2s ease;
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 
-.folder-row .folder-link::before {
+.folder-row
+.folder-link::before {
   content: '📁';
 
   flex-shrink: 0;
 
-  font-size: 13px;
+  font-size:
+    13px;
 }
 
 
-.folder-row .folder-link:hover {
-  background: #eff6ff;
-
-  color: #2563eb;
-}
-
-
-.folder-row .folder-link.active {
-  background: #dbeafe;
+.folder-row
+.folder-link:hover {
+  background: #dfe6ee;
 
   color: #1d4ed8;
 
-  font-weight: 700;
+  transform:
+    translateX(2px);
 }
 
 
-.folder-row .folder-link.active::before {
+.folder-row
+.folder-link.active {
+  background: #cfe2ff;
+
+  color: #1e40af;
+
+  font-weight:
+    700;
+}
+
+
+.folder-row
+.folder-link.active::before {
   content: '📂';
 }
 
@@ -199,15 +283,19 @@
   top: 50%;
   right: 5px;
 
-  transform: translateY(-50%);
+  transform:
+    translateY(-50%);
 
   display: flex;
+
   align-items: center;
 
   gap: 2px;
 
   opacity: 0;
-  visibility: hidden;
+
+  visibility:
+    hidden;
 
   z-index: 5;
 
@@ -217,15 +305,17 @@
 }
 
 
-.folder-row:hover .folder-actions {
+.folder-row:hover
+.folder-actions {
   opacity: 1;
 
-  visibility: visible;
+  visibility:
+    visible;
 }
 
 
 /* =========================================
-   FOLDER RENAME BUTTON
+   RENAME FOLDER
 ========================================= */
 
 .rename-folder-btn {
@@ -233,35 +323,46 @@
   height: 28px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
   padding: 0;
 
-  border: 1px solid transparent;
-  border-radius: 6px;
+  border:
+    1px solid transparent;
 
-  background: transparent;
+  border-radius:
+    6px;
 
-  color: #64748b;
+  background:
+    transparent;
 
-  font-size: 12px;
+  color:
+    #64748b;
 
-  cursor: pointer;
+  font-size:
+    12px;
+
+  cursor:
+    pointer;
 }
 
 
 .rename-folder-btn:hover {
-  background: #dbeafe;
+  background:
+    #dbeafe;
 
-  border-color: #bfdbfe;
+  border-color:
+    #93c5fd;
 
-  color: #2563eb;
+  color:
+    #1d4ed8;
 }
 
 
 /* =========================================
-   FOLDER DELETE BUTTON
+   DELETE FOLDER
 ========================================= */
 
 .delete-folder-btn {
@@ -269,30 +370,41 @@
   height: 28px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
   padding: 0;
 
-  border: 1px solid transparent;
-  border-radius: 6px;
+  border:
+    1px solid transparent;
 
-  background: transparent;
+  border-radius:
+    6px;
 
-  color: #94a3b8;
+  background:
+    transparent;
 
-  font-size: 12px;
+  color:
+    #64748b;
 
-  cursor: pointer;
+  font-size:
+    12px;
+
+  cursor:
+    pointer;
 }
 
 
 .delete-folder-btn:hover {
-  background: #fee2e2;
+  background:
+    #fee2e2;
 
-  border-color: #fecaca;
+  border-color:
+    #fecaca;
 
-  color: #dc2626;
+  color:
+    #dc2626;
 }
 
 
@@ -304,11 +416,13 @@
   position: relative;
 
   display: flex;
+
   align-items: center;
 
   width: 100%;
 
-  margin-bottom: 3px;
+  margin-bottom:
+    3px;
 }
 
 
@@ -316,29 +430,44 @@
    RECENT NOTE LINK
 ========================================= */
 
-.recent-note-row .note-link {
+.recent-note-row
+.note-link {
   width: 100%;
 
   display: block;
 
-  padding-right: 42px;
+  padding-right:
+    42px;
 
-  box-sizing: border-box;
+  box-sizing:
+    border-box;
 
-  white-space: nowrap;
+  white-space:
+    nowrap;
 
-  overflow: hidden;
+  overflow:
+    hidden;
 
-  text-overflow: ellipsis;
+  text-overflow:
+    ellipsis;
+
+  color:
+    #334155;
+}
+
+
+.recent-note-row
+.note-link:hover {
+  background:
+    #dfe6ee;
+
+  color:
+    #1d4ed8;
 }
 
 
 /* =========================================
-   RECENT NOTE DELETE BUTTON
-   ALWAYS VISIBLE
-========================================= */
-/* =========================================
-   RECENT NOTE DELETE BUTTON
+   DELETE NOTE
 ========================================= */
 
 .delete-note-btn {
@@ -347,7 +476,8 @@
   top: 50%;
   right: 5px;
 
-  transform: translateY(-50%);
+  transform:
+    translateY(-50%);
 
   z-index: 20;
 
@@ -355,80 +485,152 @@
   height: 28px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
   padding: 0;
 
-  border: 1px solid transparent;
-  border-radius: 6px;
+  border:
+    1px solid transparent;
 
-  background: transparent;
+  border-radius:
+    6px;
 
-  color: #94a3b8;
+  background:
+    transparent;
 
-  font-size: 13px;
+  color:
+    #64748b;
 
-  cursor: pointer;
+  font-size:
+    13px;
+
+  cursor:
+    pointer;
 
   opacity: 0;
-  visibility: hidden;
 
-  pointer-events: none;
+  visibility:
+    hidden;
+
+  pointer-events:
+    none;
 
   transition:
     opacity 0.2s ease,
     visibility 0.2s ease,
     background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
+    color 0.2s ease;
 }
 
 
-/* Show delete button when note is hovered */
-.recent-note-row:hover .delete-note-btn {
+.recent-note-row:hover
+.delete-note-btn {
   opacity: 1;
-  visibility: visible;
 
-  pointer-events: auto;
+  visibility:
+    visible;
+
+  pointer-events:
+    auto;
 }
 
 
 .delete-note-btn:hover {
-  background: #fee2e2;
+  background:
+    #fee2e2;
 
-  border-color: #fecaca;
-
-  color: #dc2626;
-
-  transform:
-    translateY(-50%)
-    scale(1.08);
+  color:
+    #dc2626;
 }
+
+
 /* =========================================
-   EMPTY RECENT NOTES
+   EMPTY
 ========================================= */
 
 .empty {
-  margin: 0.25rem 0.75rem;
+  margin:
+    0.25rem
+    0.75rem;
 
-  font-size: 0.8rem;
+  font-size:
+    0.8rem;
 
-  color: #94a3b8;
+  color:
+    #64748b;
 }
 
 
 /* =========================================
-   SMALL SCREEN
+   PHONE
 ========================================= */
 
 @media (max-width: 900px) {
 
   .folder-actions {
     opacity: 1;
-    visibility: visible;
+
+    visibility:
+      visible;
+  }
+
+
+  .delete-note-btn {
+    opacity: 1;
+
+    visibility:
+      visible;
+
+    pointer-events:
+      auto;
   }
 
 }
-  
+.nav-section h3 {
+  color: #64748b;
+}
+
+.nav-section a {
+  color: #cbd5e1;
+}
+
+.nav-section a:hover {
+  background: #172019;
+  color: #60a5fa;
+}
+
+.nav-section a.active {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.folder-row .folder-link {
+  color: #94a3b8;
+}
+
+.folder-row .folder-link:hover {
+  background: #172019;
+  color: #60a5fa;
+}
+
+.folder-row .folder-link.active {
+  background: #cfe2ff;
+  color: #1e40af;
+  font-weight: 700;
+}
+
+.recent-note-row .note-link {
+  color: #94a3b8;
+}
+
+.recent-note-row .note-link:hover {
+  background: #172019;
+  color: #60a5fa;
+}
+
+.empty {
+  color: #64748b;
+}

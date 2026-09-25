@@ -44,61 +44,68 @@ export class NavbarComponent {
   readonly searchFocused =
     signal(false);
 
-createNewNote(): void {
 
-  this.searchTerm.set('');
+  /* =========================================
+     CREATE NEW NOTE
+  ========================================= */
 
-  this.searchFocused.set(false);
+  createNewNote(): void {
 
+    this.searchTerm.set('');
 
-  void this.router.navigate([
-    '/notes/new'
-  ]);
-
-}
-  // ==========================================
-  // SEARCH RESULTS
-  // ==========================================
-readonly searchResults =
-  computed(() => {
-
-    const query =
-      this.searchTerm()
-        .trim()
-        .toLowerCase();
+    this.searchFocused.set(false);
 
 
-    if (!query) {
-      return [];
-    }
+    void this.router.navigate([
+      '/notes/new'
+    ]);
+
+  }
 
 
-    return this.notesService
-      .notes()
-      .filter(note => {
+  /* =========================================
+     SEARCH RESULTS
+  ========================================= */
 
-        const title =
-          (
-            note.title ||
-            'Untitled'
-          )
-            .toLowerCase();
+  readonly searchResults =
+    computed(() => {
 
-
-        // Search NOTE NAME only
-        return title.includes(
-          query
-        );
-
-      })
-      .slice(0, 8);
-
-  });
+      const query =
+        this.searchTerm()
+          .trim()
+          .toLowerCase();
 
 
-  // ==========================================
-  // INPUT
-  // ==========================================
+      if (!query) {
+        return [];
+      }
+
+
+      return this.notesService
+        .notes()
+        .filter(note => {
+
+          const title =
+            (
+              note.title ||
+              'Untitled'
+            )
+              .toLowerCase();
+
+
+          return title.includes(
+            query
+          );
+
+        })
+        .slice(0, 8);
+
+    });
+
+
+  /* =========================================
+     SEARCH INPUT
+  ========================================= */
 
   onSearchInput(
     event: Event
@@ -115,9 +122,9 @@ readonly searchResults =
   }
 
 
-  // ==========================================
-  // ENTER / SEARCH BUTTON
-  // ==========================================
+  /* =========================================
+     ENTER / SEARCH BUTTON
+  ========================================= */
 
   onSearchSubmit(
     event: Event
@@ -136,18 +143,19 @@ readonly searchResults =
 
 
     this.openNote(
+      firstResult.slug ??
       firstResult.id
     );
 
   }
 
 
-  // ==========================================
-  // OPEN NOTE
-  // ==========================================
+  /* =========================================
+     OPEN NOTE
+  ========================================= */
 
   openNote(
-    id: string
+    identifier: string
   ): void {
 
     this.searchTerm.set('');
@@ -157,15 +165,15 @@ readonly searchResults =
 
     void this.router.navigate([
       '/notes',
-      id
+      identifier
     ]);
 
   }
 
 
-  // ==========================================
-  // TITLE HIGHLIGHT
-  // ==========================================
+  /* =========================================
+     TITLE HIGHLIGHT
+  ========================================= */
 
   titleParts(
     title: string
@@ -184,7 +192,8 @@ readonly searchResults =
       return [
         {
           text:
-            title || 'Untitled',
+            title ||
+            'Untitled',
 
           match:
             false
@@ -195,7 +204,8 @@ readonly searchResults =
 
 
     const value =
-      title || 'Untitled';
+      title ||
+      'Untitled';
 
 
     const lowerValue =
@@ -217,6 +227,7 @@ readonly searchResults =
       return [
         {
           text: value,
+
           match: false
         }
       ];
@@ -233,6 +244,7 @@ readonly searchResults =
     if (index > 0) {
 
       parts.push({
+
         text:
           value.substring(
             0,
@@ -241,6 +253,7 @@ readonly searchResults =
 
         match:
           false
+
       });
 
     }
@@ -261,7 +274,8 @@ readonly searchResults =
 
 
     const endIndex =
-      index + query.length;
+      index +
+      query.length;
 
 
     if (
@@ -289,9 +303,9 @@ readonly searchResults =
   }
 
 
-  // ==========================================
-  // CONTENT PREVIEW
-  // ==========================================
+  /* =========================================
+     CONTENT PREVIEW
+  ========================================= */
 
   notePreview(
     content: string
@@ -318,15 +332,16 @@ readonly searchResults =
       text.substring(
         0,
         80
-      ) + '...'
+      ) +
+      '...'
     );
 
   }
 
 
-  // ==========================================
-  // REMOVE HTML
-  // ==========================================
+  /* =========================================
+     REMOVE HTML
+  ========================================= */
 
   private stripHtml(
     html: string

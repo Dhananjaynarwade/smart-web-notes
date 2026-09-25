@@ -1,92 +1,390 @@
+/* =========================================
+   NOTE PAGE
+========================================= */
+
+:host {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+}
+
+
 .note-page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 56px - 2.5rem);
-  max-width: 900px;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  box-sizing: border-box;
+
+  color:
+    var(--text-primary);
 }
+
+
+/* =========================================
+   TOP TOOLBAR
+========================================= */
 
 .toolbar {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
+
+  gap: 12px;
+
+  width: 100%;
+
+  flex-shrink: 0;
+
   margin-bottom: 1rem;
 }
 
-.back {
-  color: #64748b;
-  text-decoration: none;
-  font-size: 0.875rem;
 
-  &:hover {
-    color: #334155;
-  }
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+.back {
+  color:
+    var(--text-muted);
+
+  text-decoration: none;
+
+  font-size:
+    0.875rem;
+
+  font-weight: 500;
+
+  white-space: nowrap;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
+
+
+.back:hover {
+  color:
+    var(--text-primary);
+
+  transform:
+    translateX(-2px);
+}
+
+
+/* =========================================
+   ACTION BUTTONS
+========================================= */
 
 .actions {
   display: flex;
+
+  align-items: center;
+
   gap: 0.5rem;
+
+  flex-wrap: wrap;
 }
+
 
 button {
-  padding: 0.4rem 0.9rem;
-  border-radius: 6px;
-  border: none;
-  font-size: 0.875rem;
+  padding:
+    0.4rem 0.9rem;
+
+  border:
+    1px solid transparent;
+
+  border-radius: 9px;
+
+  font-size:
+    0.875rem;
+
+  font-weight: 600;
+
   cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
+
+
+button:active {
+  transform:
+    scale(0.96);
+}
+
+
+/* =========================================
+   SAVE BUTTON
+========================================= */
 
 .btn-save {
-  background: #3b82f6;
-  color: #fff;
+  background:
+    var(--primary);
 
-  &:hover {
-    background: #2563eb;
-  }
+  color: #ffffff;
 }
+
+
+.btn-save:hover {
+  background:
+    var(--primary-hover);
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 4px 12px
+    rgba(59, 130, 246, 0.25);
+}
+
+
+/* =========================================
+   DELETE BUTTON
+========================================= */
 
 .btn-danger {
-  background: #fff;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background:
+    var(--bg-primary);
 
-  &:hover {
-    background: #fef2f2;
-  }
+  color:
+    var(--danger);
+
+  border:
+    1px solid
+    rgba(220, 38, 38, 0.35);
 }
+
+
+.btn-danger:hover {
+  background:
+    rgba(220, 38, 38, 0.1);
+
+  border-color:
+    var(--danger);
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =========================================
+   FOLDER SELECTOR
+========================================= */
+
+.folder-selector {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  width: 100%;
+
+  flex-shrink: 0;
+
+  margin-bottom:
+    0.75rem;
+
+  color:
+    var(--text-secondary);
+}
+
+
+.folder-selector label {
+  font-size:
+    0.8rem;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+
+.folder-selector select {
+  min-width: 150px;
+
+  max-width: 240px;
+
+  padding:
+    0.4rem 0.65rem;
+
+  border:
+    1px solid
+    var(--input-border);
+
+  border-radius: 7px;
+
+  background:
+    var(--input-bg);
+
+  color:
+    var(--input-text);
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.folder-selector select:focus {
+  border-color:
+    var(--primary);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(59, 130, 246, 0.13);
+}
+
+
+/* =========================================
+   NOTE EDITOR CONTAINER
+
+   VISIBLE NOTE BORDER
+========================================= */
 
 app-note-editor {
-  flex: 1;
   display: block;
+
+  flex: 1;
+
+  width: 100%;
+
+  min-width: 0;
   min-height: 0;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  background:
+    var(--editor-bg);
+
+  border:
+    3px solid
+    var(--border-primary);
+
+  border-radius: 11px;
+
+  box-shadow:
+    var(--shadow);
+
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
-:host ::ng-deep .ProseMirror a[data-source-ref] {
-  color: #2563eb;
+
+
+/* =========================================
+   DARK NOTE BORDER
+========================================= */
+
+:host-context(
+  html[data-theme='dark']
+)
+app-note-editor {
+  border-color: #475569;
+
+  box-shadow:
+    0 4px 18px
+    rgba(0, 0, 0, 0.28);
+}
+
+
+/* =========================================
+   TIPTAP SOURCE LINK
+========================================= */
+
+:host ::ng-deep
+.ProseMirror
+a[data-source-ref] {
+  color:
+    var(--primary);
+
   text-decoration: underline;
+
   cursor: pointer;
 }
 
-:host ::ng-deep .ProseMirror strong {
+
+:host ::ng-deep
+.ProseMirror strong {
   text-decoration: none;
 }
+
+
+/* =========================================
+   IMAGES INSIDE NOTE
+========================================= */
+
+:host ::ng-deep
+.ProseMirror img {
+  max-width: 100%;
+
+  height: auto;
+
+  object-fit: contain;
+}
+
+
+/* =========================================
+   TABLES INSIDE NOTE
+========================================= */
+
+:host ::ng-deep
+.ProseMirror table {
+  max-width: 100%;
+}
+
+
 /* =========================================
    SAVE ALERT
 ========================================= */
 
 .custom-alert {
   display: flex;
+
   align-items: flex-start;
 
   gap: 14px;
 
-  padding: 18px 20px;
+  flex-shrink: 0;
 
-  margin: 15px 0 20px;
+  padding:
+    18px 20px;
 
-  border: 1px solid;
+  margin:
+    15px 0 20px;
+
+  border:
+    1px solid;
 
   border-radius: 10px;
 
-  animation: alertSlideDown 0.25s ease;
+  animation:
+    alertSlideDown
+    0.25s ease;
 }
 
 
@@ -97,23 +395,28 @@ app-note-editor {
   flex-shrink: 0;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
   border-radius: 50%;
 
   font-size: 22px;
+
   font-weight: 700;
 }
 
 
 .alert-content {
   flex: 1;
+
+  min-width: 0;
 }
 
 
 .alert-heading {
-  margin: 0 0 6px;
+  margin:
+    0 0 6px;
 
   font-size: 18px;
 
@@ -122,30 +425,37 @@ app-note-editor {
 
 
 .alert-content p {
-  margin: 0 0 10px;
+  margin:
+    0 0 10px;
 
   line-height: 1.5;
 }
 
 
 .alert-content hr {
-  margin: 12px 0;
+  margin:
+    12px 0;
 
   border: 0;
-  border-top: 1px solid currentColor;
+
+  border-top:
+    1px solid currentColor;
 
   opacity: 0.2;
 }
 
 
 .alert-footer {
-  margin-bottom: 0 !important;
+  margin-bottom:
+    0 !important;
 
   font-size: 14px;
 }
 
 
-/* SUCCESS */
+/* =========================================
+   SUCCESS ALERT
+========================================= */
 
 .custom-alert-success {
   background: #d1e7dd;
@@ -156,14 +466,17 @@ app-note-editor {
 }
 
 
-.custom-alert-success .alert-icon {
+.custom-alert-success
+.alert-icon {
   background: #0f5132;
 
-  color: white;
+  color: #ffffff;
 }
 
 
-/* WARNING */
+/* =========================================
+   WARNING ALERT
+========================================= */
 
 .custom-alert-warning {
   background: #fff3cd;
@@ -174,14 +487,17 @@ app-note-editor {
 }
 
 
-.custom-alert-warning .alert-icon {
+.custom-alert-warning
+.alert-icon {
   background: #ffc107;
 
   color: #212529;
 }
 
 
-/* ERROR */
+/* =========================================
+   ERROR ALERT
+========================================= */
 
 .custom-alert-danger {
   background: #f8d7da;
@@ -192,10 +508,84 @@ app-note-editor {
 }
 
 
-.custom-alert-danger .alert-icon {
+.custom-alert-danger
+.alert-icon {
   background: #842029;
 
-  color: white;
+  color: #ffffff;
+}
+
+
+/* =========================================
+   DARK MODE ALERTS
+========================================= */
+
+:host-context(
+  html[data-theme='dark']
+)
+.custom-alert-success {
+  background: #052e16;
+
+  border-color: #166534;
+
+  color: #bbf7d0;
+}
+
+
+:host-context(
+  html[data-theme='dark']
+)
+.custom-alert-success
+.alert-icon {
+  background: #16a34a;
+
+  color: #ffffff;
+}
+
+
+:host-context(
+  html[data-theme='dark']
+)
+.custom-alert-warning {
+  background: #422006;
+
+  border-color: #854d0e;
+
+  color: #fde68a;
+}
+
+
+:host-context(
+  html[data-theme='dark']
+)
+.custom-alert-warning
+.alert-icon {
+  background: #d97706;
+
+  color: #ffffff;
+}
+
+
+:host-context(
+  html[data-theme='dark']
+)
+.custom-alert-danger {
+  background: #450a0a;
+
+  border-color: #991b1b;
+
+  color: #fecaca;
+}
+
+
+:host-context(
+  html[data-theme='dark']
+)
+.custom-alert-danger
+.alert-icon {
+  background: #dc2626;
+
+  color: #ffffff;
 }
 
 
@@ -213,21 +603,26 @@ app-note-editor {
   font-size: 13px;
 
   font-weight: 600;
+
+  white-space: nowrap;
 }
 
 
 .autosave-status.saving {
-  color: #6c757d;
+  color:
+    var(--text-muted);
 }
 
 
 .autosave-status.saved {
-  color: #198754;
+  color:
+    var(--success);
 }
 
 
 .autosave-status.error {
-  color: #dc3545;
+  color:
+    var(--danger);
 }
 
 
@@ -250,6 +645,193 @@ app-note-editor {
 
     transform:
       translateY(0);
+  }
+
+}
+
+
+/* =========================================
+   TABLET / PHONE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .note-page {
+    width: 100%;
+    height: 100%;
+
+    min-height: 0;
+  }
+
+
+  .toolbar {
+    gap: 8px;
+
+    margin-bottom:
+      0.75rem;
+  }
+
+
+  .actions {
+    gap: 6px;
+
+    justify-content:
+      flex-end;
+  }
+
+
+  button {
+    padding:
+      0.4rem 0.7rem;
+
+    font-size:
+      0.8rem;
+  }
+
+
+  .folder-selector {
+    margin-bottom:
+      0.6rem;
+  }
+
+
+  .folder-selector select {
+    min-width: 120px;
+
+    max-width: 180px;
+  }
+
+
+  app-note-editor {
+    width: 100%;
+
+    border-width: 2px;
+
+    border-radius: 8px;
+  }
+
+
+  .custom-alert {
+    padding: 14px;
+
+    gap: 10px;
+
+    margin:
+      10px 0 14px;
+  }
+
+
+  .alert-icon {
+    width: 32px;
+    height: 32px;
+
+    font-size: 18px;
+  }
+
+
+  .alert-heading {
+    font-size: 16px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL PHONE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .note-page {
+    width: 100%;
+    height: 100%;
+  }
+
+
+  .toolbar {
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    margin-bottom:
+      0.5rem;
+  }
+
+
+  .back {
+    font-size:
+      0.8rem;
+  }
+
+
+  .actions {
+    margin-left: auto;
+  }
+
+
+  button {
+    padding:
+      0.38rem 0.6rem;
+  }
+
+
+  .autosave-status {
+    margin-right: 4px;
+
+    font-size: 11px;
+  }
+
+
+  .folder-selector {
+    width: 100%;
+
+    gap: 6px;
+  }
+
+
+  .folder-selector select {
+    flex: 1;
+
+    min-width: 0;
+
+    max-width: none;
+
+    font-size:
+      0.8rem;
+  }
+
+
+  app-note-editor {
+    width: 100%;
+
+    border:
+      2px solid
+      var(--border-primary);
+
+    border-radius: 7px;
+  }
+
+}
+
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+
+  .back,
+  button,
+  .folder-selector select,
+  app-note-editor {
+    transition: none;
+  }
+
+
+  .custom-alert {
+    animation: none;
   }
 
 }

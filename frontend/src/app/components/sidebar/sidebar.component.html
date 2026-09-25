@@ -14,7 +14,7 @@
       routerLink="/dashboard"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{
-        exact: true
+          (click)="folderService.selectFolder('All Notes')"
       }"
     >
       Dashboard

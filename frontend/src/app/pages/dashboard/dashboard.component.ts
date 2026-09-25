@@ -40,14 +40,9 @@ export class DashboardComponent {
   readonly notesService =
     inject(NotesService);
 
-
   readonly folderService =
     inject(FolderService);
 
-
-  // ==========================================
-  // FILTER NOTES BY SELECTED SIDEBAR FOLDER
-  // ==========================================
 
   readonly filteredNotes =
     computed(() => {
@@ -56,17 +51,13 @@ export class DashboardComponent {
         this.folderService
           .selectedFolder();
 
-
-      // All Notes = show everything
-      if (folder === 'All Notes') {
-
+      if (
+        folder === 'All Notes'
+      ) {
         return this.notesService
           .notes();
-
       }
 
-
-      // Other folder = show only that folder
       return this.notesService
         .notes()
         .filter(
@@ -75,5 +66,52 @@ export class DashboardComponent {
         );
 
     });
+
+
+  // ==========================================
+  // DELETE NOTE FROM DASHBOARD
+  // ==========================================
+
+  async deleteNote(
+    noteId: string,
+    event: Event
+  ): Promise<void> {
+
+    // Prevent opening the note
+    event.preventDefault();
+
+    event.stopPropagation();
+
+
+    const confirmed =
+      window.confirm(
+        'Are you sure you want to delete this note?'
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    try {
+
+      await this.notesService
+        .delete(noteId);
+
+    } catch (error) {
+
+      console.error(
+        'Failed to delete note:',
+        error
+      );
+
+      alert(
+        'Could not delete the note.'
+      );
+
+    }
+
+  }
 
 }

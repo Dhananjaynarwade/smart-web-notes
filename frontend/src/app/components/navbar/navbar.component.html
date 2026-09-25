@@ -1,22 +1,32 @@
 <header class="navbar">
 
-  <!-- BRAND -->
+  <!-- =====================================
+       BRAND
+  ====================================== -->
 
   <a
     routerLink="/dashboard"
     class="brand"
+    title="Smart Web Notes"
   >
 
-    <span class="brand-icon">
+    <span
+      class="brand-icon"
+      aria-hidden="true"
+    >
       📝
     </span>
 
-    Smart Web Notes
+    <span class="brand-text">
+      Smart Web Notes
+    </span>
 
   </a>
 
 
-  <!-- SEARCH -->
+  <!-- =====================================
+       SEARCH
+  ====================================== -->
 
   <div class="search-wrapper">
 
@@ -26,32 +36,58 @@
       (submit)="onSearchSubmit($event)"
     >
 
-      <input
-        class="form-control"
-        type="search"
-        placeholder="Search your notes..."
-        aria-label="Search notes"
-        autocomplete="off"
+      <div class="search-input-wrapper">
 
-        [value]="searchTerm()"
+        <span
+          class="search-icon"
+          aria-hidden="true"
+        >
+          🔍
+        </span>
 
-        (input)="onSearchInput($event)"
 
-        (focus)="searchFocused.set(true)"
-      />
+        <input
+          class="form-control"
+          type="search"
+          placeholder="Search your notes..."
+          aria-label="Search notes"
+          autocomplete="off"
+
+          [value]="searchTerm()"
+
+          (input)="onSearchInput($event)"
+
+          (focus)="searchFocused.set(true)"
+        />
+
+      </div>
 
 
       <button
         class="btn-search"
         type="submit"
+        title="Search"
       >
-        Search
+
+        <span class="search-button-text">
+          Search
+        </span>
+
+        <span
+          class="search-button-icon"
+          aria-hidden="true"
+        >
+          🔍
+        </span>
+
       </button>
 
     </form>
 
 
-    <!-- SEARCH RESULTS -->
+    <!-- =====================================
+         SEARCH RESULTS
+    ====================================== -->
 
     @if (
       searchFocused() &&
@@ -75,17 +111,35 @@
 
               class="search-result"
 
-              [class.result-blue]="i % 4 === 0"
-              [class.result-green]="i % 4 === 1"
-              [class.result-purple]="i % 4 === 2"
-              [class.result-orange]="i % 4 === 3"
+              [class.result-blue]="
+                i % 4 === 0
+              "
 
-              (click)="openNote(note.id)"
+              [class.result-green]="
+                i % 4 === 1
+              "
+
+              [class.result-purple]="
+                i % 4 === 2
+              "
+
+              [class.result-orange]="
+                i % 4 === 3
+              "
+
+              (click)="
+                openNote(
+                  note.slug ?? note.id
+                )
+              "
             >
 
               <div class="result-top">
 
-                <span class="note-icon">
+                <span
+                  class="note-icon"
+                  aria-hidden="true"
+                >
                   📝
                 </span>
 
@@ -99,7 +153,9 @@
                     track $index
                   ) {
 
-                    @if (part.match) {
+                    @if (
+                      part.match
+                    ) {
 
                       <mark>
                         {{ part.text }}
@@ -132,48 +188,57 @@
 
           }
 
-        }@else {
+        } @else {
 
-  <div class="no-results">
+          <div class="no-results">
 
-    <div class="no-result-icon">
-      🔍
-    </div>
-
-
-    <div class="no-result-content">
-
-      <h4>
-        No note found
-      </h4>
+            <div
+              class="no-result-icon"
+              aria-hidden="true"
+            >
+              🔍
+            </div>
 
 
-      <p>
-        We couldn't find a note named
-        <strong>
-          "{{ searchTerm() }}"
-        </strong>
-      </p>
+            <div class="no-result-content">
+
+              <h4>
+                No note found
+              </h4>
 
 
-      <p class="create-message">
-        Would you like to create a new note?
-      </p>
+              <p>
+
+                We couldn't find a note named
+
+                <strong>
+                  "{{ searchTerm() }}"
+                </strong>
+
+              </p>
 
 
-      <button
-        type="button"
-        class="create-note-btn"
-        (click)="createNewNote()"
-      >
-        + Create New Note
-      </button>
+              <p class="create-message">
 
-    </div>
+                Would you like to create
+                a new note?
 
-  </div>
+              </p>
 
-}
+
+              <button
+                type="button"
+                class="create-note-btn"
+                (click)="createNewNote()"
+              >
+                + Create New Note
+              </button>
+
+            </div>
+
+          </div>
+
+        }
 
       </div>
 
@@ -182,15 +247,29 @@
   </div>
 
 
-  <!-- NEW NOTE -->
+  <!-- =====================================
+       RIGHT SIDE ACTIONS
+  ====================================== -->
 
   <div class="actions">
 
     <a
       routerLink="/notes/new"
       class="btn-primary"
+      title="Create new note"
     >
-      + New Note
+
+      <span
+        class="new-note-plus"
+        aria-hidden="true"
+      >
+        +
+      </span>
+
+      <span class="new-note-text">
+        New Note
+      </span>
+
     </a>
 
   </div>

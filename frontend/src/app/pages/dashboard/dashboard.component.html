@@ -114,10 +114,10 @@
   <section class="recent">
 
     <div class="section-header">
-      
-   <h2 class="selected-folder-title">
-      📂 {{ folderService.selectedFolder() }}
-    </h2>
+
+      <h2 class="selected-folder-title">
+        📂 {{ folderService.selectedFolder() }}
+      </h2>
 
 
       <a
@@ -130,7 +130,7 @@
     </div>
 
 
-    <!-- NO NOTES IN THIS FOLDER -->
+    <!-- NO NOTES -->
 
     @if (filteredNotes().length === 0) {
 
@@ -155,7 +155,9 @@
 
     } @else {
 
+      <!-- ================================= -->
       <!-- NOTES GRID -->
+      <!-- ================================= -->
 
       <div class="note-grid">
 
@@ -164,35 +166,66 @@
           track note.id
         ) {
 
-          <a
-            [routerLink]="[
-              '/notes',
-               note.slug ?? note.id
-            ]"
-            class="note-card"
-          >
-
-            <h3>
-              {{
-                note.title ||
-                'Untitled'
-              }}
-            </h3>
+          <div class="note-card">
 
 
-            <p>
-              {{
-                note.updatedAt
-                  | date: 'medium'
-              }}
-            </p>
+            <!-- OPEN NOTE -->
+
+            <a
+              class="note-card-link"
+
+              [routerLink]="[
+                '/notes',
+                note.slug ?? note.id
+              ]"
+            >
+
+              <h3>
+                {{
+                  note.title ||
+                  'Untitled'
+                }}
+              </h3>
 
 
-            <span class="note-folder">
-              📁 {{ note.folder }}
-            </span>
+              <p>
+                {{
+                  note.updatedAt
+                    | date: 'medium'
+                }}
+              </p>
 
-          </a>
+
+              <span class="note-folder">
+                📁 {{ note.folder }}
+              </span>
+
+            </a>
+
+
+            <!-- DELETE NOTE -->
+
+            <button
+              type="button"
+
+              class="note-delete-btn"
+
+              title="Delete note"
+
+              aria-label="Delete note"
+
+              (click)="
+                deleteNote(
+                  note.id,
+                  $event
+                )
+              "
+            >
+              🗑️
+            </button>
+
+
+          </div>
 
         }
 

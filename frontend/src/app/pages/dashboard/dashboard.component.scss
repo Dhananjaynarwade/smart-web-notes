@@ -1,148 +1,180 @@
+/* =========================================
+   DASHBOARD PAGE
+========================================= */
+
+:host {
+  display: block;
+
+  width: 100%;
+
+  min-width: 0;
+}
+
+
 .dashboard {
-  max-width: 960px;
+  width: 100%;
+
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  color: #465577;
 }
 
-header {
+
+/* =========================================
+   HEADER
+========================================= */
+
+.dashboard header {
   margin-bottom: 1.5rem;
-
-  h1 {
-    margin: 0 0 0.25rem;
-    font-size: 1.75rem;
-    color: #0f172a;
-  }
-
-  p {
-    margin: 0;
-    color: #64748b;
-  }
 }
+
+
+.dashboard header h1 {
+  margin: 0 0 0.4rem;
+
+  color: #0f172a;
+
+  font-size: 2rem;
+
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+
+.dashboard header p {
+  margin: 0;
+
+  max-width: 650px;
+
+  color: #64748b;
+
+  font-size: 0.95rem;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================
+   STATS
+========================================= */
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
   gap: 1rem;
-  margin-bottom: 2rem;
+
+  width: 100%;
+
+  margin-bottom: 1.75rem;
 }
+
+
+/* =========================================
+   STAT CARD
+========================================= */
 
 .stat-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
   display: flex;
+
   flex-direction: column;
 
-  .value {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #1d4ed8;
-  }
+  gap: 5px;
 
-  .label {
-    font-size: 0.8rem;
-    color: #64748b;
-    margin-top: 0.25rem;
-  }
+  min-width: 0;
+
+  padding: 1rem 1.1rem;
+
+  border:
+    1px solid #e2e8f0;
+
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px
+    rgba(15, 23, 42, 0.08);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
 
-  h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #0f172a;
-  }
+.stat-card:hover {
+  transform:
+    translateY(-3px);
 
-  .link {
-    color: #3b82f6;
-    text-decoration: none;
-    font-size: 0.875rem;
+  border-color: #3b82f6;
 
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.12);
 }
 
-.empty-state {
-  background: #fff;
-  border: 1px dashed #cbd5e1;
-  border-radius: 8px;
-  padding: 2.5rem;
-  text-align: center;
+
+.stat-card .value {
+  color: #3b82f6;
+
+  font-size: 1.7rem;
+
+  font-weight: 700;
+
+  line-height: 1.1;
+}
+
+
+.stat-card .label {
   color: #64748b;
 
-  .btn {
-    display: inline-block;
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background: #3b82f6;
-    color: #fff;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 0.875rem;
-  }
+  font-size: 0.82rem;
+
+  font-weight: 600;
 }
 
-.note-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
-}
 
-.note-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1rem;
-  text-decoration: none;
-  color: inherit;
-  transition: box-shadow 0.15s;
-
-  &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  h3 {
-    margin: 0 0 0.5rem;
-    font-size: 0.95rem;
-    color: #0f172a;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  p {
-    margin: 0;
-    font-size: 0.75rem;
-    color: #94a3b8;
-  }
-}
 /* =========================================
    FOLDER FILTER
 ========================================= */
 
 .folder-filter {
-  margin: 28px 0 22px;
+  margin: 0 0 1.75rem;
+
+  padding: 1rem;
+
+  border:
+    1px solid #e2e8f0;
+
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px
+    rgba(15, 23, 42, 0.08);
 }
 
 
 .folder-filter h2 {
-  margin: 0 0 14px;
+  margin: 0 0 0.8rem;
 
   color: #0f172a;
 
-  font-size: 20px;
+  font-size: 1rem;
+
   font-weight: 700;
 }
 
 
 /* =========================================
-   FOLDER BUTTON CONTAINER
+   FOLDER BUTTONS
 ========================================= */
 
 .folder-buttons {
@@ -150,40 +182,43 @@ header {
 
   flex-wrap: wrap;
 
-  gap: 10px;
+  gap: 8px;
 }
 
-
-/* =========================================
-   FOLDER BUTTON
-========================================= */
 
 .folder-btn {
   display: inline-flex;
 
   align-items: center;
+  justify-content: center;
 
-  gap: 6px;
+  gap: 5px;
 
-  padding: 8px 14px;
+  min-height: 34px;
 
-  border: 1px solid #cbd5e1;
+  padding: 0.4rem 0.8rem;
 
-  border-radius: 20px;
+  border:
+    1px solid #cbd5e1;
+
+  border-radius: 999px;
 
   background: #ffffff;
 
-  color: #475569;
+  color: #334155;
 
-  font-size: 13px;
+  font-size: 0.78rem;
+
   font-weight: 600;
+
+  white-space: nowrap;
 
   cursor: pointer;
 
   transition:
     background 0.2s ease,
-    border-color 0.2s ease,
     color 0.2s ease,
+    border-color 0.2s ease,
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
@@ -192,42 +227,624 @@ header {
 .folder-btn::before {
   content: '📁';
 
-  font-size: 13px;
+  font-size: 12px;
 }
 
 
 .folder-btn:hover {
-  border-color: #3b82f6;
-
   background: #eff6ff;
 
   color: #2563eb;
 
-  transform: translateY(-1px);
+  border-color: #3b82f6;
 
-  box-shadow:
-    0 4px 10px
-    rgba(59, 130, 246, 0.12);
+  transform:
+    translateY(-1px);
 }
 
 
-/* =========================================
-   SELECTED FOLDER
-========================================= */
-
 .folder-btn.active {
-  border-color: #2563eb;
-
   background: #2563eb;
 
   color: #ffffff;
 
+  border-color: #2563eb;
+
   box-shadow:
-    0 5px 14px
+    0 4px 12px
     rgba(37, 99, 235, 0.25);
 }
 
 
 .folder-btn.active::before {
   content: '📂';
+}
+
+
+/* =========================================
+   NOTES SECTION
+========================================= */
+
+.recent {
+  width: 100%;
+
+  min-width: 0;
+}
+
+
+/* =========================================
+   SECTION HEADER
+========================================= */
+
+.section-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-bottom: 1rem;
+}
+
+
+.selected-folder-title {
+  margin: 0;
+
+  min-width: 0;
+
+  color: #0f172a;
+
+  font-size: 1.15rem;
+
+  font-weight: 700;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   NEW NOTE LINK
+========================================= */
+
+.link {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  min-height: 36px;
+
+  padding: 0.4rem 0.85rem;
+
+  border-radius: 8px;
+
+  background: #3b82f6;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-size: 0.82rem;
+
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.link:hover {
+  background: #2563eb;
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 5px 14px
+    rgba(59, 130, 246, 0.28);
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.empty-state {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 220px;
+
+  box-sizing: border-box;
+
+  padding: 2rem 1rem;
+
+  border:
+    1px dashed #cbd5e1;
+
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  color: #64748b;
+
+  text-align: center;
+}
+
+
+.empty-state::before {
+  content: '📝';
+
+  display: block;
+
+  margin-bottom: 0.7rem;
+
+  font-size: 2.3rem;
+}
+
+
+.empty-state p {
+  margin: 0 0 1rem;
+
+  color: #64748b;
+
+  font-size: 0.9rem;
+
+  line-height: 1.5;
+}
+
+
+.empty-state strong {
+  color: #0f172a;
+}
+
+
+/* =========================================
+   CREATE NOTE BUTTON
+========================================= */
+
+.btn {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.5rem 0.9rem;
+
+  border-radius: 8px;
+
+  background: #3b82f6;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-size: 0.82rem;
+
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.btn:hover {
+  background: #2563eb;
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 5px 14px
+    rgba(59, 130, 246, 0.25);
+}
+
+
+/* =========================================
+   NOTE GRID
+========================================= */
+
+.note-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fill,
+      minmax(230px, 1fr)
+    );
+
+  gap: 1rem;
+
+  width: 100%;
+
+  min-width: 0;
+}
+
+
+/* =========================================
+   NOTE CARD
+========================================= */
+
+.note-card {
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+
+  min-height: 135px;
+
+  padding: 1rem;
+  
+
+  box-sizing: border-box;
+
+  border:
+    1px solid #e2e8f0;
+
+  border-radius: 12px;
+
+  background: #1d2a36;
+
+  color: #0f172a;
+
+  text-decoration: none;
+
+  box-shadow:
+    0 4px 14px
+    rgba(15, 23, 42, 0.08);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.note-card:hover {
+  transform:
+    translateY(-4px);
+
+  border-color: #0948ae;
+
+  box-shadow:
+    0 10px 24px
+    rgba(15, 23, 42, 0.14);
+}
+
+
+/* =========================================
+   NOTE TITLE
+========================================= */
+
+.note-card h3 {
+  margin: 0 0 0.65rem;
+
+  // card title change color here 
+  color: #d7d0dc;
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  line-height: 1.35;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   NOTE DATE
+========================================= */
+
+.note-card p {
+  margin: 0 0 0.8rem;
+
+  color: #64748b;
+
+  font-size: 0.75rem;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================
+   NOTE FOLDER
+========================================= */
+
+.note-folder {
+  display: inline-flex;
+
+  align-items: center;
+
+  width: fit-content;
+
+  max-width: 100%;
+
+  margin-top: auto;
+
+  padding: 0.25rem 0.5rem;
+
+  border-radius: 999px;
+
+  background: #dbeafe;
+
+  color: #0b4fe1;
+
+  font-size: 0.72rem;
+
+  font-weight: 600;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 900px) {
+
+  .stats {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 0.75rem;
+  }
+
+
+  .stat-card {
+    padding: 0.85rem;
+  }
+
+
+  .stat-card .value {
+    font-size: 1.45rem;
+  }
+
+
+  .note-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* =========================================
+   PHONE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .dashboard header {
+    margin-bottom: 1.1rem;
+  }
+
+
+  .dashboard header h1 {
+    font-size: 1.55rem;
+  }
+
+
+  .dashboard header p {
+    font-size: 0.85rem;
+  }
+
+
+  .stats {
+    gap: 0.6rem;
+  }
+
+
+  .stat-card {
+    padding: 0.75rem 0.6rem;
+
+    border-radius: 9px;
+
+    text-align: center;
+  }
+
+
+  .stat-card .value {
+    font-size: 1.25rem;
+  }
+
+
+  .stat-card .label {
+    font-size: 0.7rem;
+  }
+
+
+  .folder-filter {
+    padding: 0.8rem;
+
+    margin-bottom: 1.25rem;
+
+    border-radius: 10px;
+  }
+
+
+  .folder-buttons {
+    flex-wrap: nowrap;
+
+    overflow-x: auto;
+
+    padding-bottom: 5px;
+
+    scrollbar-width: none;
+  }
+
+
+  .folder-buttons::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  .folder-btn {
+    flex: 0 0 auto;
+
+    min-height: 32px;
+
+    padding: 0.35rem 0.7rem;
+  }
+
+
+  .section-header {
+    margin-bottom: 0.75rem;
+  }
+
+
+  .selected-folder-title {
+    font-size: 1rem;
+  }
+
+
+  .link {
+    min-height: 34px;
+
+    padding: 0.35rem 0.7rem;
+
+    font-size: 0.76rem;
+  }
+
+
+  .note-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 0.75rem;
+  }
+
+}
+
+
+/* =========================================
+   SMALL PHONE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .dashboard header h1 {
+    font-size: 1.35rem;
+  }
+
+
+  .dashboard header p {
+    font-size: 0.8rem;
+
+    line-height: 1.5;
+  }
+
+
+  .stats {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 0.4rem;
+  }
+
+
+  .stat-card {
+    padding: 0.65rem 0.3rem;
+
+    border-radius: 8px;
+  }
+
+
+  .stat-card .value {
+    font-size: 1.1rem;
+  }
+
+
+  .stat-card .label {
+    font-size: 0.62rem;
+  }
+
+
+  .folder-filter {
+    padding: 0.7rem;
+  }
+
+
+  .folder-filter h2 {
+    font-size: 0.92rem;
+  }
+
+
+  .section-header {
+    gap: 0.5rem;
+  }
+
+
+  .selected-folder-title {
+    font-size: 0.92rem;
+  }
+
+
+  .link {
+    font-size: 0.72rem;
+
+    white-space: nowrap;
+  }
+
+
+  .note-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .note-card {
+    min-height: 120px;
+
+    padding: 0.85rem;
+  }
+
+
+  .empty-state {
+    min-height: 180px;
+
+    padding: 1.5rem 0.75rem;
+  }
+
+}
+.note-delete-btn {
+  position: absolute;
+
+  right: 8px;
+  bottom: 10px;
+
+  width: 26px;
+  height: 26px;
+
+  font-size: 11px;
+
+  padding: 0;
+
+  border-radius: 6px;
 }
