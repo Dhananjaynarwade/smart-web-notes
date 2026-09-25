@@ -79,7 +79,9 @@ export class NotesService {
 
 
   private readonly apiUrl =
-    'http://127.0.0.1:8000/api/notes/';
+    // 'http://127.0.0.1:8000/api/notes/';
+    // private readonly apiUrl =
+  'https://smart-web-notes-backend.onrender.com/api/notes/';
 
 
   // ==========================================
