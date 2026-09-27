@@ -2,20 +2,37 @@
   "manifest_version": 3,
   "name": "Smart Web Notes",
   "version": "1.0.0",
-  "description": "Capture selected web content into Smart Web Notes.",
+  "description": "Save selected web content to Smart Web Notes.",
 
   "permissions": [
-    "contextMenus",
-    "tabs",
+    "storage",
+    "activeTab",
     "scripting",
-    "activeTab"
+    "contextMenus"
   ],
 
   "host_permissions": [
-    "<all_urls>"
+    "<all_urls>",
+    "https://smart-web-notes.onrender.com/*"
   ],
 
   "background": {
     "service_worker": "background.js"
-  }
+  },
+
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://smart-web-notes.onrender.com/*",
+        "http://localhost:4200/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ]
 }

@@ -2,6 +2,12 @@
 // SMART WEB NOTES - BACKGROUND
 // ==========================================
 
+const SMART_NOTES_PRODUCTION =
+  "https://smart-web-notes.onrender.com";
+
+const SMART_NOTES_LOCAL =
+  "http://localhost:4200";
+
 
 // ==========================================
 // CREATE RIGHT-CLICK MENU
@@ -11,37 +17,39 @@ chrome.runtime.onInstalled.addListener(() => {
 
   chrome.contextMenus.removeAll(() => {
 
-    // Parent menu
+    // Parent
     chrome.contextMenus.create({
       id: "smart-web-notes",
       title: "📒 Smart Web Notes",
       contexts: ["selection"]
     });
 
-    // Add to note title
+
+    // Title
     chrome.contextMenus.create({
       id: "add-as-title",
       parentId: "smart-web-notes",
       title: "🏷 Add as Title",
       contexts: ["selection"]
     });
-    // Add to note body
+
+
+    // Heading
     chrome.contextMenus.create({
-      id: "add-to-note",
+      id: "add-as-heading",
       parentId: "smart-web-notes",
-      title: "➕ Add to Note",
+      title: "H Add as Heading",
       contexts: ["selection"]
     });
-    // Paste as normal text
-chrome.contextMenus.create({
-  id: "paste-normal-text",
-  parentId: "smart-web-notes",
-  title: "📄 Paste as Normal Text",
-  contexts: ["selection"]
-});
 
 
-
+    // Normal text
+    chrome.contextMenus.create({
+      id: "paste-normal-text",
+      parentId: "smart-web-notes",
+      title: "📄 Paste as Normal Text",
+      contexts: ["selection"]
+    });
 
   });
 
@@ -49,64 +57,237 @@ chrome.contextMenus.create({
 
 
 // ==========================================
-// SEND DATA TO OPEN SMART WEB NOTES TAB
+// FIND SMART WEB NOTES TAB
 // ==========================================
 
-async function sendToOpenNote(capture) {
+async function findSmartNotesTab() {
 
   const tabs =
-    await chrome.tabs.query({
-      url: "http://localhost:4200/*"
+    await chrome.tabs.query({});
+
+
+  // First prefer production
+  let noteTab =
+    tabs.find(tab =>
+      tab.url?.startsWith(
+        SMART_NOTES_PRODUCTION
+      )
+    );
+
+
+  // Local development fallback
+  if (!noteTab) {
+
+    noteTab =
+      tabs.find(tab =>
+        tab.url?.startsWith(
+          SMART_NOTES_LOCAL
+        )
+      );
+
+  }
+
+
+  return noteTab;
+}
+
+
+// ==========================================
+// STORE CAPTURE SAFELY
+// ==========================================
+
+async function storePendingCapture(
+  capture
+) {
+
+  await chrome.storage.local.set({
+
+    pendingCapture: {
+      ...capture,
+
+      captureId:
+        crypto.randomUUID(),
+
+      createdAt:
+        Date.now()
+    }
+
+  });
+
+}
+
+
+// ==========================================
+// OPEN / FOCUS SMART WEB NOTES
+// ==========================================
+
+async function openSmartNotes() {
+
+  let noteTab =
+    await findSmartNotesTab();
+
+
+  if (noteTab?.id) {
+
+    await chrome.tabs.update(
+      noteTab.id,
+      {
+        active: true
+      }
+    );
+
+
+    if (noteTab.windowId) {
+
+      await chrome.windows.update(
+        noteTab.windowId,
+        {
+          focused: true
+        }
+      );
+
+    }
+
+
+    return noteTab;
+
+  }
+
+
+  // No Smart Web Notes tab open.
+  // Open production automatically.
+
+  noteTab =
+    await chrome.tabs.create({
+
+      url:
+        `${SMART_NOTES_PRODUCTION}/notes/new`
+
     });
 
 
-  const noteTab =
-    tabs.find(tab =>
-      tab.url?.includes("/notes/new") ||
-      tab.url?.includes("/notes/")
+  return noteTab;
+}
+
+
+// ==========================================
+// SEND CAPTURE TO ANGULAR
+// ==========================================
+
+async function sendCaptureToTab(
+  tabId,
+  capture
+) {
+
+  try {
+
+    await chrome.scripting.executeScript({
+
+      target: {
+        tabId
+      },
+
+      world: "MAIN",
+
+      func: (data) => {
+
+        window.postMessage(
+          {
+            source:
+              "smart-web-notes-extension",
+
+            type:
+              "ADD_TO_MY_NOTES",
+
+            capture:
+              data
+          },
+
+          window.location.origin
+        );
+
+      },
+
+      args: [
+        capture
+      ]
+
+    });
+
+
+    return true;
+
+  } catch (error) {
+
+    console.log(
+      "Smart Web Notes is not ready yet:",
+      error
     );
+
+
+    return false;
+
+  }
+
+}
+
+
+// ==========================================
+// SAVE + OPEN + SEND
+// ==========================================
+
+async function sendToSmartNotes(
+  capture
+) {
+
+  // IMPORTANT:
+  // Save capture first.
+  // It will survive while Render wakes.
+
+  await storePendingCapture(
+    capture
+  );
+
+
+  const noteTab =
+    await openSmartNotes();
 
 
   if (!noteTab?.id) {
 
-    console.log(
-      "Open Smart Web Notes first."
-    );
-
     return false;
+
   }
 
 
-  await chrome.scripting.executeScript({
+  // Give Angular/Render time to load.
+  setTimeout(
+    async () => {
 
-    target: {
-      tabId: noteTab.id
-    },
+      const result =
+        await chrome.storage.local.get(
+          "pendingCapture"
+        );
 
-    world: "MAIN",
 
-    func: (data) => {
+      const pending =
+        result.pendingCapture;
 
-      window.postMessage(
-        {
-          source:
-            "smart-web-notes-extension",
 
-          type:
-            "ADD_TO_MY_NOTES",
+      if (!pending) {
+        return;
+      }
 
-          capture:
-            data
-        },
 
-        window.location.origin
+      await sendCaptureToTab(
+        noteTab.id,
+        pending
       );
 
     },
 
-    args: [capture]
-
-  });
+    2000
+  );
 
 
   return true;
@@ -114,58 +295,171 @@ async function sendToOpenNote(capture) {
 
 
 // ==========================================
-// RIGHT CLICK MENU ACTIONS
+// RIGHT-CLICK ACTION
 // ==========================================
-chrome.contextMenus.create({
-  id: "add-as-heading",
-  parentId: "smart-web-notes",
-  title: "H  Add as Heading",
-  contexts: ["selection"]
-});
-chrome.contextMenus.create({
-  id: "paste-normal-text",
-  parentId: "smart-web-notes",
-  title: "📄 Paste as Normal Text",
-  contexts: ["selection"]
-});
+
 chrome.contextMenus.onClicked.addListener(
-  async (info, sourceTab) => {
+  async (
+    info,
+    sourceTab
+  ) => {
 
-    // Accept all 3 menu options
+    const acceptedMenus = [
+
+      "add-as-title",
+
+      "add-as-heading",
+
+      "paste-normal-text"
+
+    ];
+
+
     if (
-      info.menuItemId !== "add-to-note" &&
-      info.menuItemId !== "add-as-title" &&
-      info.menuItemId !== "paste-normal-text"
+      !acceptedMenus.includes(
+        info.menuItemId
+      )
     ) {
+
       return;
+
     }
 
 
-    const selectedText =
-      info.selectionText?.trim();
+//  this for entrile text as paste as as iot is 
+let selectedText = '';
+
+if (sourceTab?.id) {
+
+  try {
+
+    const results =
+      await chrome.scripting.executeScript({
+
+        target: {
+          tabId: sourceTab.id
+        },
+
+        func: () => {
+
+          const selection =
+            window.getSelection();
+
+          if (
+            !selection ||
+            selection.rangeCount === 0
+          ) {
+            return '';
+          }
+
+          const range =
+            selection.getRangeAt(0);
+
+          const fragment =
+            range.cloneContents();
+
+          const container =
+            document.createElement('div');
+
+          container.appendChild(
+            fragment
+          );
 
 
-    if (!selectedText) {
-      return;
-    }
+          // Preserve real webpage line breaks
+          container
+            .querySelectorAll(
+              'br'
+            )
+            .forEach(br => {
+              br.replaceWith('\n');
+            });
 
 
-    let target = "body";
+          // Preserve block elements
+          container
+            .querySelectorAll(
+              'p, div, li, h1, h2, h3, h4, h5, h6, pre, blockquote'
+            )
+            .forEach(element => {
+
+              element.insertAdjacentText(
+                'afterend',
+                '\n'
+              );
+
+            });
 
 
-    // Title
+          return (
+            container.innerText ||
+            container.textContent ||
+            ''
+          )
+            .replace(
+              /\n{3,}/g,
+              '\n\n'
+            )
+            .trim();
+
+        }
+
+      });
+
+
+    selectedText =
+      results?.[0]?.result?.trim() ||
+      '';
+
+  } catch (error) {
+
+    console.error(
+      'Could not read selected text:',
+      error
+    );
+
+  }
+
+}
+
+
+// Fallback
+if (!selectedText) {
+
+  selectedText =
+    info.selectionText?.trim() ||
+    '';
+
+}
+
+
+if (!selectedText) {
+  return;
+}
+
+    let target =
+      "plain";
+
+
     if (
-      info.menuItemId === "add-as-title"
+      info.menuItemId ===
+      "add-as-title"
     ) {
-      target = "title";
+
+      target =
+        "title";
+
     }
 
 
-    // Plain normal text
     if (
-      info.menuItemId === "paste-normal-text"
+      info.menuItemId ===
+      "add-as-heading"
     ) {
-      target = "plain";
+
+      target =
+        "heading";
+
     }
 
 
@@ -175,29 +469,31 @@ chrome.contextMenus.onClicked.addListener(
         selectedText,
 
       sourceTitle:
-        sourceTab?.title || "",
+        sourceTab?.title ||
+        "",
 
       sourceUrl:
-        sourceTab?.url || "",
+        sourceTab?.url ||
+        "",
 
-      target:
-        target
+      target
 
     };
 
 
     console.log(
-      "Sending capture:",
+      "Smart Web Notes capture:",
       capture
     );
 
 
-    await sendToOpenNote(
+    await sendToSmartNotes(
       capture
     );
 
   }
 );
+
 
 // ==========================================
 // FLOATING BUTTON MESSAGE
@@ -214,25 +510,31 @@ chrome.runtime.onMessage.addListener(
       message?.type !==
       "ADD_SELECTION_TO_NOTES"
     ) {
+
       return;
+
     }
 
 
-    (async () => {
+    void (
+      async () => {
 
-      const success =
-        await sendToOpenNote(
-          message.capture
-        );
+        const success =
+          await sendToSmartNotes(
+            message.capture
+          );
 
 
-      sendResponse({
-        ok: success
-      });
+        sendResponse({
+          ok:
+            success
+        });
 
-    })();
+      }
+    )();
 
 
     return true;
+
   }
 );

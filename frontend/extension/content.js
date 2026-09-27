@@ -6,6 +6,14 @@ let captureMenu = null;
 let selectedText = '';
 let selectedLines = [];
 
+function removeCaptureMenu() {
+  if (captureMenu) {
+     captureMenu.remove();
+     captureMenu = null;
+
+  }
+
+}
 
 // ==========================================
 // DETECT TEXT SELECTION
@@ -15,14 +23,17 @@ document.addEventListener('mouseup', () => {
 
   setTimeout(() => {
 
-    const selection = window.getSelection();
+    const selection =
+      window.getSelection();
 
     const text =
       selection?.toString().trim() || '';
 
     if (!text) {
+
       removeCaptureMenu();
       return;
+
     }
 
     if (selection.rangeCount === 0) {
@@ -31,15 +42,15 @@ document.addEventListener('mouseup', () => {
 
     // Save ONLY what user selected
     selectedText = text;
+
     selectedLines =
-  text
-    .split(/\r?\n/)
-    .map(line => line.trim())
-    .filter(line => line.length > 0);
+      text
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
 
     const range =
       selection.getRangeAt(0);
-      
 
     const rect =
       range.getBoundingClientRect();
@@ -62,7 +73,8 @@ function showCaptureMenu(rect) {
   captureMenu =
     document.createElement('div');
 
-  captureMenu.style.position = 'absolute';
+  captureMenu.style.position =
+    'absolute';
 
   captureMenu.style.left =
     `${window.scrollX + rect.right + 8}px`;
@@ -105,7 +117,9 @@ function showCaptureMenu(rect) {
   noteButton.textContent =
     '➕ Add to Note';
 
-  stylePrimaryButton(noteButton);
+  stylePrimaryButton(
+    noteButton
+  );
 
   noteButton.addEventListener(
     'mousedown',
@@ -121,10 +135,7 @@ function showCaptureMenu(rect) {
       sendCapture(
         'body',
         noteButton
-        
-       
       );
-      
 
     }
   );
@@ -135,31 +146,58 @@ function showCaptureMenu(rect) {
   // ========================================
 
   const titleButton =
-  document.createElement('button');
+    document.createElement('button');
 
-titleButton.textContent =
-  'Title';
+  titleButton.textContent =
+    'Title';
 
-styleSecondaryButton(titleButton);
+  styleSecondaryButton(
+    titleButton
+  );
 
-titleButton.addEventListener(
-  'mousedown',
-  (event) => {
-    event.preventDefault();
-  }
-);
+  titleButton.addEventListener(
+    'mousedown',
+    (event) => {
+      event.preventDefault();
+    }
+  );
 
-titleButton.addEventListener(
-  'click',
-  () => {
+  titleButton.addEventListener(
+    'click',
+    () => {
 
-    sendCapture(
-      'title',
-      titleButton
-    );
+      sendCapture(
+        'title',
+        titleButton
+      );
 
-  }
-);
+    }
+  );
+
+
+  // ========================================
+  // ADD BUTTONS TO MENU
+  // ========================================
+
+  captureMenu.appendChild(
+    noteButton
+  );
+
+  captureMenu.appendChild(
+    titleButton
+  );
+
+
+  // ========================================
+  // ADD MENU TO PAGE
+  // ========================================
+
+  document.body.appendChild(
+    captureMenu
+  );
+
+}
+
 
 // ==========================================
 // SEND SELECTED TEXT
@@ -191,7 +229,6 @@ function sendCapture(
         sourceUrl:
           window.location.href,
 
-        // "body" or "title"
         target:
           target
 
@@ -200,6 +237,22 @@ function sendCapture(
     },
 
     (response) => {
+
+      if (
+        chrome.runtime.lastError
+      ) {
+
+        console.error(
+          'Smart Web Notes extension error:',
+          chrome.runtime.lastError
+        );
+
+        button.textContent =
+          'Open Smart Web Notes';
+
+        return;
+      }
+
 
       if (response?.ok) {
 
@@ -230,7 +283,9 @@ function sendCapture(
 // PRIMARY BUTTON STYLE
 // ==========================================
 
-function stylePrimaryButton(button) {
+function stylePrimaryButton(
+  button
+) {
 
   button.style.border =
     'none';
@@ -263,7 +318,9 @@ function stylePrimaryButton(button) {
 // SECONDARY BUTTON STYLE
 // ==========================================
 
-function styleSecondaryButton(button) {
+function styleSecondaryButton(
+  button
+) {
 
   button.style.border =
     '1px solid #d1d5db';
@@ -292,19 +349,3 @@ function styleSecondaryButton(button) {
 }
 
 
-// ==========================================
-// REMOVE FLOATING MENU
-// ==========================================
-
-function removeCaptureMenu() {
-
-  if (captureMenu) {
-
-    captureMenu.remove();
-
-    captureMenu = null;
-
-  }
-
-}
-}

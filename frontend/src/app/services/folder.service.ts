@@ -1,146 +1,334 @@
-# Angular Project Creation - NPM Install Error
+import {
+  Injectable,
+  signal
+} from '@angular/core';
 
-## Date
 
-26 September 2026
+@Injectable({
+  providedIn: 'root'
+})
+export class FolderService {
 
-## Project
+  private readonly DEFAULT_FOLDERS: string[] = [
+    'All Notes',
+    'DevOps',
+    'AWS',
+    'Python',
+    'Angular',
+    'Django',
+    'Cyber Security',
+    'Projects',
+    'Personal'
+  ];
 
-Mini AWS
 
-## Error
+  readonly folders =
+    signal<string[]>([
+      ...this.DEFAULT_FOLDERS
+    ]);
 
-While creating the Angular project using:
 
-ng new mini-aws-frontend
+  readonly selectedFolder =
+    signal<string>('All Notes');
 
-npm failed during package installation.
 
-Error:
+  constructor() {
 
-npm ERR! Cannot read properties of null (reading 'edgesOut')
+    this.loadFolders();
 
-npm ERR! Package install failed.
+  }
 
-The Schematic workflow failed.
 
----
+  // ==========================================
+  // SELECT FOLDER
+  // ==========================================
 
-# What caused it?
+  selectFolder(
+    folder: string
+  ): void {
 
-The Angular CLI successfully started creating the application.
+    this.selectedFolder.set(
+      folder
+    );
 
-The failure happened when npm was resolving/installing the project's
-dependencies.
+  }
 
-Possible reasons include:
 
-- npm dependency-tree resolution problem
-- npm cache problem
-- npm version bug
-- incomplete previous installation
-- corrupted node_modules/package-lock state
+  // ==========================================
+  // CHECK DEFAULT FOLDER
+  // ==========================================
 
-This was NOT an Angular application code error.
+  isDefaultFolder(
+    folder: string
+  ): boolean {
 
----
+    return this.DEFAULT_FOLDERS.includes(
+      folder
+    );
 
-# Step 1 - Check Node and npm
+  }
 
-Run:
 
-node -v
+  // ==========================================
+  // ADD FOLDER
+  // ==========================================
 
-npm -v
+  async addFolder(
+    folderName: string
+  ): Promise<string | null> {
 
----
+    const cleanName =
+      folderName.trim();
 
-# Step 2 - Check npm
 
-Run:
+    if (!cleanName) {
 
-npm doctor
+      return null;
 
----
+    }
 
-# Step 3 - Clean npm cache if required
 
-Run:
+    const exists =
+      this.folders().some(
+        folder =>
+          folder.toLowerCase() ===
+          cleanName.toLowerCase()
+      );
 
-npm cache clean --force
 
-Then verify:
+    if (exists) {
 
-npm cache verify
+      return null;
 
----
+    }
 
-# Step 4 - Remove incomplete project if ng new failed
 
-Example:
+    this.folders.update(
+      folders => [
+        ...folders,
+        cleanName
+      ]
+    );
 
-cd /d "D:\Cloud projects"
 
-rmdir /s /q mini-aws-frontend
+    this.saveFolders();
 
-Only do this if the Angular project creation failed and the folder contains
-an incomplete project.
 
----
+    return cleanName;
 
-# Step 5 - Create project again
+  }
 
-Run:
 
-ng new mini-aws-frontend
+  // ==========================================
+  // RENAME FOLDER
+  // ==========================================
 
-Options:
+  async renameFolder(
+    oldName: string,
+    newName: string
+  ): Promise<boolean> {
 
-Routing        = Yes
-Stylesheet     = CSS
-SSR / SSG      = No
-AI Integration = None
+    const cleanName =
+      newName.trim();
 
----
 
-# Successful Result
+    if (!cleanName) {
 
-The second installation completed with:
+      return false;
 
-Packages installed successfully.
+    }
 
-Successfully initialized git.
 
-Therefore the Angular project was created successfully.
+    if (
+      this.isDefaultFolder(
+        oldName
+      )
+    ) {
 
----
+      return false;
 
-# Important
+    }
 
-Do not delete or recreate the project if:
 
-ng new
+    const duplicate =
+      this.folders().some(
+        folder =>
+          folder !== oldName &&
+          folder.toLowerCase() ===
+          cleanName.toLowerCase()
+      );
 
-has already completed successfully.
 
-Test the project first:
+    if (duplicate) {
 
-cd /d "D:\Cloud projects\mini-aws-frontend"
+      return false;
 
-ng serve
+    }
 
-Open:
 
-http://localhost:4200
+    this.folders.update(
+      folders =>
+        folders.map(
+          folder =>
+            folder === oldName
+              ? cleanName
+              : folder
+        )
+    );
 
----
 
-# Windows Git Warning
+    if (
+      this.selectedFolder() ===
+      oldName
+    ) {
 
-Warnings such as:
+      this.selectedFolder.set(
+        cleanName
+      );
 
-LF will be replaced by CRLF
+    }
 
-are normal Windows Git line-ending warnings.
 
-They do not mean the Angular project failed.
+    this.saveFolders();
+
+
+    return true;
+
+  }
+
+
+  // ==========================================
+  // DELETE FOLDER
+  // ==========================================
+
+  async deleteFolder(
+    folderName: string
+  ): Promise<boolean> {
+
+    if (
+      this.isDefaultFolder(
+        folderName
+      )
+    ) {
+
+      return false;
+
+    }
+
+
+    const exists =
+      this.folders().includes(
+        folderName
+      );
+
+
+    if (!exists) {
+
+      return false;
+
+    }
+
+
+    this.folders.update(
+      folders =>
+        folders.filter(
+          folder =>
+            folder !== folderName
+        )
+    );
+
+
+    if (
+      this.selectedFolder() ===
+      folderName
+    ) {
+
+      this.selectedFolder.set(
+        'All Notes'
+      );
+
+    }
+
+
+    this.saveFolders();
+
+
+    return true;
+
+  }
+
+
+  // ==========================================
+  // SAVE CUSTOM FOLDERS
+  // ==========================================
+
+  private saveFolders(): void {
+
+    const customFolders =
+      this.folders().filter(
+        folder =>
+          !this.DEFAULT_FOLDERS.includes(
+            folder
+          )
+      );
+
+
+    localStorage.setItem(
+      'smart-web-notes-folders',
+      JSON.stringify(
+        customFolders
+      )
+    );
+
+  }
+
+
+  // ==========================================
+  // LOAD CUSTOM FOLDERS
+  // ==========================================
+
+  private loadFolders(): void {
+
+    const saved =
+      localStorage.getItem(
+        'smart-web-notes-folders'
+      );
+
+
+    if (!saved) {
+
+      return;
+
+    }
+
+
+    try {
+
+      const customFolders =
+        JSON.parse(saved) as string[];
+
+
+      this.folders.set([
+        ...this.DEFAULT_FOLDERS,
+
+        ...customFolders.filter(
+          folder =>
+            !this.DEFAULT_FOLDERS.includes(
+              folder
+            )
+        )
+      ]);
+
+
+    } catch (error) {
+
+      console.error(
+        'Failed to load folders:',
+        error
+      );
+
+    }
+
+  }
+
+}

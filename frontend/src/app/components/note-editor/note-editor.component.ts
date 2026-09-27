@@ -2,96 +2,124 @@ import {
   Component,
   effect,
   HostListener,
+  inject,
   input,
   OnDestroy,
   output,
   signal,
 } from '@angular/core';
 
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import {
+  FormsModule
+} from '@angular/forms';
+
+import {
+  ActivatedRoute
+} from '@angular/router';
 
 import {
   Editor,
   Extension,
-  Mark,
-  mergeAttributes
+  Mark
 } from '@tiptap/core';
 
-import { ResizableImage } from './resizable-image.extension';
-
-import Link from '@tiptap/extension-link';
-import Placeholder from '@tiptap/extension-placeholder';
-import Underline from '@tiptap/extension-underline';
-import StarterKit from '@tiptap/starter-kit';
-
-import { Table } from '@tiptap/extension-table';
-import TableCell from '@tiptap/extension-table-cell';
-import TableHeader from '@tiptap/extension-table-header';
-import TableRow from '@tiptap/extension-table-row';
-
-import { TiptapEditorDirective } from 'ngx-tiptap';
-
-import { ImageService } from '../../services/image.service';
 import {
-  inject
-} from '@angular/core';
+  ResizableImage
+} from './resizable-image.extension';
+
+import Link
+  from '@tiptap/extension-link';
+
+import Placeholder
+  from '@tiptap/extension-placeholder';
+
+import Underline
+  from '@tiptap/extension-underline';
+
+import StarterKit
+  from '@tiptap/starter-kit';
+
+import {
+  Table
+} from '@tiptap/extension-table';
+
+import TableCell
+  from '@tiptap/extension-table-cell';
+
+import TableHeader
+  from '@tiptap/extension-table-header';
+
+import TableRow
+  from '@tiptap/extension-table-row';
+
+import {
+  TiptapEditorDirective
+} from 'ngx-tiptap';
+
+import {
+  ImageService
+} from '../../services/image.service';
+
 
 /* =========================================================
    KEYBOARD SHORTCUTS
 ========================================================= */
 
-const EditorShortcuts = Extension.create({
+const EditorShortcuts =
+  Extension.create({
 
-  name: 'editorShortcuts',
+    name: 'editorShortcuts',
 
-  addKeyboardShortcuts() {
-    return {
+    addKeyboardShortcuts() {
 
-      // Ctrl + Z
-      'Mod-z': () => {
-        return this.editor.commands.undo();
-      },
+      return {
 
-      // Ctrl + Y
-      'Mod-y': () => {
-        return this.editor.commands.redo();
-      },
+        'Mod-z': () =>
+          this.editor.commands.undo(),
 
-      // Ctrl + Shift + Z
-      'Mod-Shift-z': () => {
-        return this.editor.commands.redo();
-      },
+        'Mod-y': () =>
+          this.editor.commands.redo(),
 
-      // Ctrl + U
-      'Mod-u': () => {
-        return this.editor.commands.toggleUnderline();
-      },
+        'Mod-Shift-z': () =>
+          this.editor.commands.redo(),
 
-      // Delete selected image
-      'Delete': () => {
+        'Mod-u': () =>
+          this.editor.commands
+            .toggleUnderline(),
 
-        if (!this.editor.isActive('image')) {
-          return false;
+        Delete: () => {
+
+          if (
+            !this.editor
+              .isActive('image')
+          ) {
+            return false;
+          }
+
+          return this.editor.commands
+            .deleteSelection();
+
+        },
+
+        Backspace: () => {
+
+          if (
+            !this.editor
+              .isActive('image')
+          ) {
+            return false;
+          }
+
+          return this.editor.commands
+            .deleteSelection();
+
         }
 
-        return this.editor.commands.deleteSelection();
-      },
+      };
 
-      // Backspace selected image
-      'Backspace': () => {
+    }
 
-        if (!this.editor.isActive('image')) {
-          return false;
-        }
-
-        return this.editor.commands.deleteSelection();
-      }
-
-    };
-  }
-
-});
+  });
 
 
 /* =========================================================
@@ -106,7 +134,18 @@ const SourceRef = Mark.create({
     return {
 
       url: {
-        default: null
+        default: null,
+
+        parseHTML: element =>
+          element.getAttribute(
+            'data-source-url'
+          ) ||
+          element.getAttribute(
+            'href'
+          ) ||
+          element.getAttribute(
+            'url'
+          )
       },
 
       title: {
@@ -116,48 +155,48 @@ const SourceRef = Mark.create({
     };
   },
 
+
   parseHTML() {
     return [
+
+      // New safe format
       {
-        tag: 'a[data-source-ref]'
-      }
+        tag:'span[data-source-ref="true"]'
+      },
+       // Old source links
+    {
+      tag: 'a[data-source-ref="true"]'
+    }
+
+    
+
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
+
+  renderHTML({
+    HTMLAttributes
+  }) {
 
     const sourceUrl =
-      HTMLAttributes['url'] || '';
+      HTMLAttributes['url'] ||
+      '';
 
     const sourceTitle =
       HTMLAttributes['title'] ||
-      sourceUrl ||
       'Original source';
 
     return [
-      'a',
+      'span',
+      {
+        'data-source-ref':'true',
 
-      mergeAttributes(
-        HTMLAttributes,
-        {
-          href: sourceUrl,
-
-          target: '_blank',
-
-          rel: 'noopener noreferrer',
-
-          'data-source-ref': 'true',
-
-          'data-source-title':
-            sourceTitle,
-
-          title:
-            sourceTitle
-        }
-      ),
-
+        'data-source-url': sourceUrl,
+          title:sourceTitle
+      },
       0
     ];
+
   }
 
 });
@@ -165,7 +204,8 @@ const SourceRef = Mark.create({
 
 @Component({
 
-  selector: 'app-note-editor',
+  selector:
+    'app-note-editor',
 
   imports: [
     FormsModule,
@@ -181,166 +221,6 @@ const SourceRef = Mark.create({
 })
 export class NoteEditorComponent
   implements OnDestroy {
-
-  /* =========================================================
-     UPLOAD IMAGE FROM LAPTOP / PHONE
-  ========================================================= */
-
-  uploadImage(
-    event: Event
-  ): void {
-
-    const input =
-      event.target as HTMLInputElement;
-
-    const file =
-      input.files?.[0];
-
-
-    if (!file) {
-      return;
-    }
-
-
-    if (
-      !file.type.startsWith('image/')
-    ) {
-
-      alert(
-        'Please select an image.'
-      );
-
-      input.value = '';
-
-      return;
-    }
-
-
-    const position =
-      this.lastCursorPosition ??
-      this.editor.state.selection.from;
-
-
-    void (async () => {
-
-      try {
-
-        this.uploading.set(
-          true
-        );
-
-
-        const uploaded =
-          await this
-            .imageService
-            .upload(
-              file
-            );
-
-
-        const maxPosition =
-          this.editor
-            .state
-            .doc
-            .content
-            .size;
-
-
-        const insertPosition =
-          Math.min(
-            position,
-            maxPosition
-          );
-
-
-        this.editor
-          .chain()
-          .insertContentAt(
-
-            insertPosition,
-
-            [
-              {
-                type:
-                  'image',
-
-                attrs: {
-                  src:
-                    uploaded.url
-                }
-              },
-
-              {
-                type:
-                  'paragraph',
-
-                content:
-                  []
-              }
-            ],
-
-            {
-              updateSelection:
-                true
-            }
-
-          )
-          .focus()
-          .run();
-
-
-        this.lastCursorPosition =
-          this.editor
-            .state
-            .selection
-            .from;
-
-
-        console.log(
-          'Image uploaded:',
-          uploaded.url
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          'Image upload failed:',
-          error
-        );
-
-        alert(
-          'Image upload failed.'
-        );
-
-
-      } finally {
-
-        this.uploading.set(
-          false
-        );
-
-        input.value = '';
-
-      }
-
-    })();
-
-  }
-
-
-  /* =========================================================
-     CURSOR + IMAGE SELECTION
-  ========================================================= */
-
-  private lastCursorPosition:
-    number | null = null;
-
-  private selectedImagePosition:
-    number | null = null;
-
-  readonly imageSelected =
-    signal(false);
 
 
   /* =========================================================
@@ -370,9 +250,228 @@ export class NoteEditorComponent
   contentChange =
     output<string>();
 
-
   readonly uploading =
     signal(false);
+
+  readonly imageSelected =
+    signal(false);
+
+
+  /* =========================================================
+     CURSOR / IMAGE STATE
+  ========================================================= */
+
+  private lastCursorPosition:
+    number | null = null;
+
+  private selectedImagePosition:
+    number | null = null;
+
+
+  /* =========================================================
+     CLEAN SOURCE URL
+  ========================================================= */
+
+  private cleanSourceUrl(
+    rawUrl: string
+  ): string {
+
+    if (!rawUrl) {
+      return '';
+    }
+
+    try {
+
+      const url =
+        new URL(rawUrl);
+
+      const hostname =
+        url.hostname.toLowerCase();
+
+      const isGoogle =
+        hostname === 'google.com' ||
+        hostname.endsWith(
+          '.google.com'
+        );
+
+      const isGoogleSearch =
+        isGoogle &&
+        url.pathname === '/search';
+
+      if (isGoogleSearch) {
+
+        const query =
+          url.searchParams.get(
+            'q'
+          );
+
+        if (query) {
+
+          return (
+            `${url.origin}` +
+            `/search?q=` +
+            encodeURIComponent(
+              query
+            )
+          );
+
+        }
+
+      }
+
+      return rawUrl;
+
+    } catch {
+
+      return rawUrl;
+
+    }
+
+  }
+
+
+  /* =========================================================
+     UPLOAD IMAGE FROM LAPTOP / PHONE
+  ========================================================= */
+
+  uploadImage(
+    event: Event
+  ): void {
+
+    const input =
+      event.target as
+        HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (
+      !file.type.startsWith(
+        'image/'
+      )
+    ) {
+
+      alert(
+        'Please select an image.'
+      );
+
+      input.value = '';
+
+      return;
+
+    }
+
+    const position =
+      this.lastCursorPosition ??
+      this.editor
+        .state
+        .selection
+        .from;
+
+    void (
+      async () => {
+
+        try {
+
+          this.uploading.set(
+            true
+          );
+
+          const uploaded =
+            await this
+              .imageService
+              .upload(
+                file
+              );
+
+          const maxPosition =
+            this.editor
+              .state
+              .doc
+              .content
+              .size;
+
+          const insertPosition =
+            Math.min(
+              position,
+              maxPosition
+            );
+
+          this.editor
+            .chain()
+            .insertContentAt(
+
+              insertPosition,
+
+              [
+                {
+                  type:
+                    'image',
+
+                  attrs: {
+                    src:
+                      uploaded.url
+                  }
+                },
+
+                {
+                  type:
+                    'paragraph',
+
+                  content:
+                    []
+                }
+              ],
+
+              {
+                updateSelection:
+                  true
+              }
+
+            )
+            .focus()
+            .run();
+
+          this.lastCursorPosition =
+            this.editor
+              .state
+              .selection
+              .from;
+
+          console.log(
+            'Image uploaded:',
+            uploaded.url
+          );
+
+        } catch (error) {
+
+          console.error(
+            'Image upload failed:',
+            error
+          );
+
+          alert(
+            'Image upload failed.'
+          );
+
+        } finally {
+
+          this.uploading.set(
+            false
+          );
+
+          input.value = '';
+
+        }
+
+      }
+    )();
+
+  }
 
 
   /* =========================================================
@@ -388,8 +487,6 @@ export class NoteEditorComponent
     event: MessageEvent
   ): void {
 
-    // Accept messages only
-    // from our Angular page
     if (
       event.origin !==
       window.location.origin
@@ -410,22 +507,32 @@ export class NoteEditorComponent
       return;
     }
 
-
     const selectedText =
-      data.capture?.text?.trim() || '';
+      data.capture
+        ?.text
+        ?.trim() ||
+      '';
 
     const sourceTitle =
-      data.capture?.sourceTitle?.trim()
-      || '';
+      data.capture
+        ?.sourceTitle
+        ?.trim() ||
+      '';
+
+    const rawSourceUrl =
+      data.capture
+        ?.sourceUrl
+        ?.trim() ||
+      '';
 
     const sourceUrl =
-      data.capture?.sourceUrl?.trim()
-      || '';
+      this.cleanSourceUrl(
+        rawSourceUrl
+      );
 
     const target =
       data.capture?.target ||
       'body';
-
 
     if (!selectedText) {
       return;
@@ -436,11 +543,13 @@ export class NoteEditorComponent
        PASTE AS NORMAL TEXT
     ===================================================== */
 
-    if (target === 'plain') {
+    if (
+      target === 'plain'
+    ) {
 
       const normalLines =
         selectedText
-          .split(/\r?\n| {2,}/)
+          .split(/\r?\n/)
           .map(
             (line: string) =>
               line.trim()
@@ -450,10 +559,10 @@ export class NoteEditorComponent
               line.length > 0
           );
 
-
       const normalParagraphs:
         any[] =
         normalLines.map(
+
           (
             line: string,
             index: number
@@ -472,64 +581,66 @@ export class NoteEditorComponent
                   line
               },
 
-              ...(index === 0 &&
-              sourceUrl
+              ...(
+                index === 0 &&
+                sourceUrl
 
-                ? [
+                  ? [
 
-                    {
-                      type:
-                        'text',
+                      {
+                        type:
+                          'text',
 
-                      text:
-                        '  '
-                    },
+                        text:
+                          '  '
+                      },
 
-                    {
-                      type:
-                        'text',
+                      {
+                        type:
+                          'text',
 
-                      text:
-                        '↗ source',
+                        text:
+                          '↗ source',
 
-                      marks: [
-                        {
-                          type:
-                            'sourceRef',
+                        marks: [
+                          {
+                            type:
+                              'sourceRef',
 
-                          attrs: {
+                            attrs: {
 
-                            url:
-                              sourceUrl,
+                              url:
+                                sourceUrl,
 
-                            title:
-                              sourceTitle ||
-                              sourceUrl
+                              title:
+                                sourceTitle ||
+                                sourceUrl
 
+                            }
                           }
-                        }
-                      ]
-                    }
+                        ]
+                      }
 
-                  ]
+                    ]
 
-                : [])
+                  : []
+              )
 
             ]
 
           })
+
         );
 
-
-      // Blank paragraph after
       normalParagraphs.push({
+
         type:
           'paragraph',
 
         content:
           []
-      });
 
+      });
 
       const maxPosition =
         this.editor
@@ -538,9 +649,9 @@ export class NoteEditorComponent
           .content
           .size;
 
-
       const position =
-        this.lastCursorPosition !== null
+        this.lastCursorPosition !==
+        null
 
           ? Math.min(
               this.lastCursorPosition,
@@ -548,7 +659,6 @@ export class NoteEditorComponent
             )
 
           : maxPosition;
-
 
       this.editor
         .chain()
@@ -560,15 +670,24 @@ export class NoteEditorComponent
         .unsetAllMarks()
         .run();
 
-
       this.lastCursorPosition =
         this.editor
           .state
           .selection
           .from;
 
+      console.log(
+        '✅ Added normal text:',
+        selectedText
+      );
+
+      console.log(
+        '🔗 Source URL:',
+        sourceUrl
+      );
 
       return;
+
     }
 
 
@@ -576,7 +695,9 @@ export class NoteEditorComponent
        ADD AS NOTE TITLE
     ===================================================== */
 
-    if (target === 'title') {
+    if (
+      target === 'title'
+    ) {
 
       this.titleChange.emit(
         selectedText
@@ -588,6 +709,132 @@ export class NoteEditorComponent
       );
 
       return;
+
+    }
+
+
+    /* =====================================================
+       ADD AS HEADING
+    ===================================================== */
+
+    if (
+      target === 'heading'
+    ) {
+
+      const maxPosition =
+        this.editor
+          .state
+          .doc
+          .content
+          .size;
+
+      const position =
+        this.lastCursorPosition !==
+        null
+
+          ? Math.min(
+              this.lastCursorPosition,
+              maxPosition
+            )
+
+          : maxPosition;
+
+      const headingContent:
+        any[] = [
+
+          {
+            type:
+              'heading',
+
+            attrs: {
+              level:
+                2
+            },
+
+            content: [
+
+              {
+                type:
+                  'text',
+
+                text:
+                  selectedText
+              },
+
+              ...(
+                sourceUrl
+
+                  ? [
+
+                      {
+                        type:
+                          'text',
+
+                        text:
+                          '  ↗ source',
+
+                        marks: [
+                          {
+                            type:
+                              'sourceRef',
+
+                            attrs: {
+
+                              url:
+                                sourceUrl,
+
+                              title:
+                                sourceTitle ||
+                                sourceUrl
+
+                            }
+
+                          }
+                        ]
+
+                      }
+
+                    ]
+
+                  : []
+              )
+
+            ]
+
+          },
+
+          {
+            type:
+              'paragraph',
+
+            content:
+              []
+          }
+
+        ];
+
+      this.editor
+        .chain()
+        .insertContentAt(
+          position,
+          headingContent
+        )
+        .focus()
+        .run();
+
+      this.lastCursorPosition =
+        this.editor
+          .state
+          .selection
+          .from;
+
+      console.log(
+        '✅ Added heading:',
+        selectedText
+      );
+
+      return;
+
     }
 
 
@@ -607,17 +854,16 @@ export class NoteEditorComponent
             line.length > 0
         );
 
-
     if (
       cleanLines.length === 0
     ) {
       return;
     }
 
-
     const paragraphs:
       any[] =
       cleanLines.map(
+
         (
           line: string,
           index: number
@@ -648,50 +894,49 @@ export class NoteEditorComponent
                   : []
             },
 
+            ...(
+              index === 0 &&
+              sourceUrl
 
-            ...(index === 0 &&
-            sourceUrl
+                ? [
 
-              ? [
+                    {
+                      type:
+                        'text',
 
-                  {
-                    type:
-                      'text',
+                      text:
+                        '  ↗ source',
 
-                    text:
-                      '  ↗ source',
+                      marks: [
+                        {
+                          type:
+                            'sourceRef',
 
-                    marks: [
-                      {
-                        type:
-                          'sourceRef',
+                          attrs: {
 
-                        attrs: {
+                            url:
+                              sourceUrl,
 
-                          url:
-                            sourceUrl,
+                            title:
+                              sourceTitle ||
+                              sourceUrl
 
-                          title:
-                            sourceTitle ||
-                            sourceUrl
-
+                          }
                         }
+                      ]
+                    }
 
-                      }
-                    ]
-                  }
+                  ]
 
-                ]
-
-              : [])
+                : []
+            )
 
           ]
 
         })
+
       );
 
-
-    // Blank paragraph after
     paragraphs.push({
 
       type:
@@ -702,7 +947,6 @@ export class NoteEditorComponent
 
     });
 
-
     const maxPosition =
       this.editor
         .state
@@ -710,9 +954,9 @@ export class NoteEditorComponent
         .content
         .size;
 
-
     const position =
-      this.lastCursorPosition !== null
+      this.lastCursorPosition !==
+      null
 
         ? Math.min(
             this.lastCursorPosition,
@@ -720,7 +964,6 @@ export class NoteEditorComponent
           )
 
         : maxPosition;
-
 
     this.editor
       .chain()
@@ -731,13 +974,11 @@ export class NoteEditorComponent
       .focus()
       .run();
 
-
     this.lastCursorPosition =
       this.editor
         .state
         .selection
         .from;
-
 
     console.log(
       '✅ Added captured text:',
@@ -779,13 +1020,11 @@ export class NoteEditorComponent
 
         }),
 
-
         Underline,
 
         EditorShortcuts,
 
         SourceRef,
-
 
         Link.configure({
 
@@ -800,7 +1039,6 @@ export class NoteEditorComponent
 
         }),
 
-
         ResizableImage.configure({
 
           inline:
@@ -811,7 +1049,6 @@ export class NoteEditorComponent
 
         }),
 
-
         Table.configure({
 
           resizable:
@@ -819,13 +1056,11 @@ export class NoteEditorComponent
 
         }),
 
-
         TableRow,
 
         TableHeader,
 
         TableCell,
-
 
         Placeholder.configure({
 
@@ -838,55 +1073,103 @@ export class NoteEditorComponent
 
 
       /* =====================================================
-         PASTE IMAGE
+         EDITOR PROPERTIES
       ===================================================== */
 
       editorProps: {
 
+
+        /* =================================================
+           OPEN SOURCE LINK
+        ================================================= */
+
+        handleClick: (_view, _pos, event) => {
+
+  const target =
+    event.target as HTMLElement;
+
+  const sourceElement =
+    target.closest(
+      'span[data-source-ref="true"]'
+    ) as HTMLElement | null;
+
+  if (!sourceElement) {
+    return false;
+  }
+
+  const sourceUrl =
+    sourceElement.getAttribute(
+      'data-source-url'
+    );
+
+  if (!sourceUrl) {
+    return false;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  window.open(
+    sourceUrl,
+    '_blank',
+    'noopener,noreferrer'
+  );
+
+  return true;
+},
+
+
+        /* =================================================
+           PASTE IMAGE
+        ================================================= */
+
         handlePaste:
-          (_view, event) => {
+          (
+            view,
+            event
+          ) => {
 
             const clipboardData =
               event.clipboardData;
 
-
-            if (!clipboardData) {
+            if (
+              !clipboardData
+            ) {
               return false;
             }
-
 
             const items =
               Array.from(
                 clipboardData.items
               );
 
-
             const imageItem =
               items.find(
                 item =>
-                  item.type.startsWith(
-                    'image/'
-                  )
+                  item.type
+                    .startsWith(
+                      'image/'
+                    )
               );
 
-
             // Normal text paste
-            if (!imageItem) {
+            if (
+              !imageItem
+            ) {
               return false;
             }
-
 
             const pastedFile =
-              imageItem.getAsFile();
+              imageItem
+                .getAsFile();
 
-
-            if (!pastedFile) {
+            if (
+              !pastedFile
+            ) {
               return false;
             }
 
-
             event.preventDefault();
-
 
             const file =
               new File(
@@ -905,102 +1188,96 @@ export class NoteEditorComponent
 
               );
 
-
-            // Save exact cursor
-            // before async upload
             const imageInsertPosition =
-              _view
+              view
                 .state
                 .selection
                 .from;
 
+            void (
+              async () => {
 
-            void (async () => {
+                try {
 
-              try {
+                  this.uploading.set(
+                    true
+                  );
 
-                this.uploading.set(
-                  true
-                );
+                  const uploaded =
+                    await this
+                      .imageService
+                      .upload(
+                        file
+                      );
 
+                  this.editor
+                    .chain()
+                    .insertContentAt(
 
-                const uploaded =
-                  await this
-                    .imageService
-                    .upload(
-                      file
-                    );
+                      imageInsertPosition,
 
+                      [
 
-                this.editor
-                  .chain()
-                  .insertContentAt(
+                        {
+                          type:
+                            'image',
 
-                    imageInsertPosition,
+                          attrs: {
+                            src:
+                              uploaded.url
+                          }
+                        },
 
-                    [
+                        {
+                          type:
+                            'paragraph',
 
-                      {
-                        type:
-                          'image',
-
-                        attrs: {
-                          src:
-                            uploaded.url
+                          content:
+                            []
                         }
-                      },
+
+                      ],
 
                       {
-                        type:
-                          'paragraph',
-
-                        content:
-                          []
+                        updateSelection:
+                          true
                       }
 
-                    ],
+                    )
+                    .focus()
+                    .run();
 
-                    {
-                      updateSelection:
-                        true
-                    }
+                  this.lastCursorPosition =
+                    this.editor
+                      .state
+                      .selection
+                      .from;
 
-                  )
-                  .focus()
-                  .run();
+                  console.log(
+                    'Screenshot uploaded:',
+                    uploaded.url
+                  );
 
+                } catch (error) {
 
-                this.lastCursorPosition =
-                  this.editor
-                    .state
-                    .selection
-                    .from;
+                  console.error(
+                    'Screenshot upload failed:',
+                    error
+                  );
 
+                } finally {
 
-                console.log(
-                  'Screenshot uploaded:',
-                  uploaded.url
-                );
+                  this.uploading.set(
+                    false
+                  );
 
-              } catch (error) {
-
-                console.error(
-                  'Screenshot upload failed:',
-                  error
-                );
-
-              } finally {
-
-                this.uploading.set(
-                  false
-                );
+                }
 
               }
-
-            })();
-
+            )();
 
             return true;
+
           }
 
       },
@@ -1019,13 +1296,11 @@ export class NoteEditorComponent
               .selection
               .from;
 
-
           const position =
             editor
               .state
               .selection
               .from;
-
 
           const node =
             editor
@@ -1034,7 +1309,6 @@ export class NoteEditorComponent
               .nodeAt(
                 position
               );
-
 
           if (
             node &&
@@ -1093,13 +1367,11 @@ export class NoteEditorComponent
       const html =
         this.content();
 
-
       if (
         this.editor.isDestroyed
       ) {
         return;
       }
-
 
       this.loadContent(
         html
@@ -1139,13 +1411,11 @@ export class NoteEditorComponent
     const position =
       this.selectedImagePosition;
 
-
     if (
       position === null
     ) {
       return;
     }
-
 
     const node =
       this.editor
@@ -1155,7 +1425,6 @@ export class NoteEditorComponent
           position
         );
 
-
     if (
       !node ||
       node.type.name !==
@@ -1163,7 +1432,6 @@ export class NoteEditorComponent
     ) {
       return;
     }
-
 
     const transaction =
       this.editor
@@ -1182,21 +1450,17 @@ export class NoteEditorComponent
 
         );
 
-
     this.editor
       .view
       .dispatch(
         transaction
       );
 
-
-    // Keep image selected
     this.editor
       .commands
       .setNodeSelection(
         position
       );
-
 
     this.selectedImagePosition =
       position;
@@ -1215,13 +1479,11 @@ export class NoteEditorComponent
     const position =
       this.selectedImagePosition;
 
-
     if (
       position === null
     ) {
       return false;
     }
-
 
     const node =
       this.editor
@@ -1231,7 +1493,6 @@ export class NoteEditorComponent
           position
         );
 
-
     if (
       !node ||
       node.type.name !==
@@ -1239,7 +1500,6 @@ export class NoteEditorComponent
     ) {
       return false;
     }
-
 
     return (
       node.attrs['align'] ||
@@ -1265,13 +1525,11 @@ export class NoteEditorComponent
     const position =
       this.selectedImagePosition;
 
-
     if (
       position === null
     ) {
       return;
     }
-
 
     const node =
       this.editor
@@ -1281,7 +1539,6 @@ export class NoteEditorComponent
           position
         );
 
-
     if (
       !node ||
       node.type.name !==
@@ -1289,7 +1546,6 @@ export class NoteEditorComponent
     ) {
       return;
     }
-
 
     const transaction =
       this.editor
@@ -1310,21 +1566,17 @@ export class NoteEditorComponent
 
         );
 
-
     this.editor
       .view
       .dispatch(
         transaction
       );
 
-
-    // Keep image selected
     this.editor
       .commands
       .setNodeSelection(
         position
       );
-
 
     this.selectedImagePosition =
       position;
@@ -1343,13 +1595,11 @@ export class NoteEditorComponent
     const position =
       this.selectedImagePosition;
 
-
     if (
       position === null
     ) {
       return false;
     }
-
 
     const node =
       this.editor
@@ -1359,7 +1609,6 @@ export class NoteEditorComponent
           position
         );
 
-
     if (
       !node ||
       node.type.name !==
@@ -1368,9 +1617,10 @@ export class NoteEditorComponent
       return false;
     }
 
-
     return (
-      node.attrs['pictureStyle'] ||
+      node.attrs[
+        'pictureStyle'
+      ] ||
       'normal'
     ) === style;
 
@@ -1390,9 +1640,9 @@ export class NoteEditorComponent
         .chain()
         .focus();
 
-
-    switch (action) {
-
+    switch (
+      action
+    ) {
 
       case 'bold':
 
@@ -1425,8 +1675,7 @@ export class NoteEditorComponent
 
         chain
           .toggleHeading({
-            level:
-              1
+            level: 1
           })
           .run();
 
@@ -1437,8 +1686,7 @@ export class NoteEditorComponent
 
         chain
           .toggleHeading({
-            level:
-              2
+            level: 2
           })
           .run();
 
@@ -1484,11 +1732,9 @@ export class NoteEditorComponent
         chain
           .insertTable({
 
-            rows:
-              3,
+            rows: 3,
 
-            cols:
-              3,
+            cols: 3,
 
             withHeaderRow:
               true
@@ -1556,15 +1802,12 @@ export class NoteEditorComponent
       return;
     }
 
-
     const incoming =
       html || '';
-
 
     const current =
       this.editor
         .getHTML();
-
 
     if (
       current === incoming
@@ -1572,15 +1815,17 @@ export class NoteEditorComponent
       return;
     }
 
-
     this.editor
       .commands
       .setContent(
+
         incoming,
+
         {
           emitUpdate:
             false
         }
+
       );
 
   }
@@ -1588,7 +1833,7 @@ export class NoteEditorComponent
 
   /* =========================================================
      LOAD CAPTURED WEB CONTENT
-     Existing route-based support
+     EXISTING ROUTE SUPPORT
   ========================================================= */
 
   private loadCapturedContent():
@@ -1599,29 +1844,32 @@ export class NoteEditorComponent
         .snapshot
         .queryParamMap;
 
-
     const selectedText =
       params
         .get('text')
-        ?.trim() || '';
-
+        ?.trim() ||
+      '';
 
     const sourceTitle =
       params
         .get('title')
-        ?.trim() || '';
+        ?.trim() ||
+      '';
 
-
-    const sourceUrl =
+    const rawSourceUrl =
       params
         .get('url')
-        ?.trim() || '';
+        ?.trim() ||
+      '';
 
+    const sourceUrl =
+      this.cleanSourceUrl(
+        rawSourceUrl
+      );
 
     if (!selectedText) {
       return;
     }
-
 
     if (sourceTitle) {
 
@@ -1631,20 +1879,24 @@ export class NoteEditorComponent
 
     }
 
-
     const paragraphs:
       any[] =
       selectedText
         .split(/\r?\n/)
         .map(
-          (line: string) =>
+          (
+            line: string
+          ) =>
             line.trim()
         )
         .filter(
-          (line: string) =>
+          (
+            line: string
+          ) =>
             line.length > 0
         )
         .map(
+
           (
             line: string,
             index: number
@@ -1663,129 +1915,52 @@ export class NoteEditorComponent
                   line
               },
 
-              ...(index === 0 &&
-              sourceUrl
+              ...(
+                index === 0 &&
+                sourceUrl
 
-                ? [
+                  ? [
 
-                    {
-                      type:
-                        'text',
+                      {
+                        type:
+                          'text',
 
-                      text:
-                        '  ↗ source',
+                        text:
+                          '  ↗ source',
 
-                      marks: [
+                        marks: [
 
-                        {
-                          type:
-                            'sourceRef',
+                          {
+                            type:
+                              'sourceRef',
 
-                          attrs: {
+                            attrs: {
 
-                            url:
-                              sourceUrl,
+                              url:
+                                sourceUrl,
 
-                            title:
-                              sourceTitle ||
-                              sourceUrl
+                              title:
+                                sourceTitle ||
+                                sourceUrl
+
+                            }
 
                           }
 
-                        }
+                        ]
 
-                      ]
-                    }
+                      }
 
-                  ]
+                    ]
 
-                : [])
+                  : []
+              )
 
             ]
 
           })
+
         );
-
-
-    if (sourceTitle) {
-
-      paragraphs.push({
-
-        type:
-          'paragraph',
-
-        content: [
-
-          {
-            type:
-              'text',
-
-            text:
-              `Source: ${sourceTitle}`
-          }
-
-        ]
-
-      });
-
-    }
-
-
-    if (sourceUrl) {
-
-      paragraphs.push({
-
-        type:
-          'paragraph',
-
-        content: [
-
-          {
-            type:
-              'text',
-
-            text:
-              'Original page: '
-          },
-
-          {
-            type:
-              'text',
-
-            text:
-              sourceUrl,
-
-            marks: [
-
-              {
-                type:
-                  'link',
-
-                attrs: {
-
-                  href:
-                    sourceUrl,
-
-                  target:
-                    '_blank',
-
-                  rel:
-                    'noopener noreferrer'
-
-                }
-
-              }
-
-            ]
-
-          }
-
-        ]
-
-      });
-
-    }
-
 
     this.editor
       .commands
@@ -1806,13 +1981,12 @@ export class NoteEditorComponent
 
       );
 
-
     const html =
       this.imageService
         .normalizeHtml(
-          this.editor.getHTML()
+          this.editor
+            .getHTML()
         );
-
 
     this.contentChange.emit(
       html
@@ -1834,7 +2008,6 @@ export class NoteEditorComponent
           'link'
         );
 
-
     const previous =
       typeof attributes['href']
         === 'string'
@@ -1843,23 +2016,18 @@ export class NoteEditorComponent
 
         : 'https://';
 
-
     const url =
       window.prompt(
         'Enter URL',
         previous
       );
 
-
-    // Cancel
     if (
       url === null
     ) {
       return;
     }
 
-
-    // Empty = remove link
     if (
       url.trim() === ''
     ) {
@@ -1874,8 +2042,8 @@ export class NoteEditorComponent
         .run();
 
       return;
-    }
 
+    }
 
     this.editor
       .chain()

@@ -524,12 +524,12 @@ private readonly loadNoteEffect =
         savedNote.slug ?? savedNote.id
       ]);
 
-      this.showSaveAlert(
-        'success',
-        'Well done!',
-        'Your note has been saved successfully.',
-        'Your text and screenshots are stored permanently.'
-      );
+ this.showSaveAlert(
+  'success',
+  'Saved!',
+  'Your note has been saved successfully.',
+  'Your changes were synced to the server.'
+);
 
     } catch (error) {
 
@@ -542,12 +542,12 @@ private readonly loadNoteEffect =
         'error'
       );
 
-      this.showSaveAlert(
-        'danger',
-        'Save failed!',
-        'Your note could not be saved.',
-        'Make sure the Django server is running.'
-      );
+    this.showSaveAlert(
+  'danger',
+  'Sync failed!',
+  'Your note could not be synced to the server.',
+  'Please try again in a moment.'
+);
 
     }
 
