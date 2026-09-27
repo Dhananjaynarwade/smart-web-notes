@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { DashboardLayoutComponent } from './layouts/dashboard-layout/dashboard-layout.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { NoteDetailComponent } from './pages/note-detail/note-detail.component';
+import { Auth } from './components/auth/auth';
 
 export const routes: Routes = [
   {
@@ -12,6 +13,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'notes/new', component: NoteDetailComponent },
       { path: 'notes/:id', component: NoteDetailComponent },
+      {path: 'login',component:Auth}
     ],
   },
   { path: '**', redirectTo: 'dashboard' },

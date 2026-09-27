@@ -1,0 +1,300 @@
+<div class="auth-page">
+
+  <div class="materialContainer">
+
+    <!-- =========================
+         LOGIN
+    ========================== -->
+  <!-- =========================
+     LOGIN
+========================== -->
+<div
+  class="box"
+  [class.back]="isRegisterMode"
+>
+
+  <div class="title">
+    LOGIN
+  </div>
+
+
+  <!-- USERNAME / EMAIL -->
+  <div class="input">
+
+    <label for="name">
+      Username or Email
+    </label>
+
+    <input
+      type="text"
+      id="name"
+      name="name"
+      placeholder=" "
+      [(ngModel)]="loginData.username"
+    />
+
+    <span class="spin"></span>
+
+  </div>
+
+
+  <!-- PASSWORD -->
+  <div class="input">
+
+    <label for="pass">
+      Password
+    </label>
+
+    <input
+      type="password"
+      id="pass"
+      name="pass"
+      placeholder=" "
+      [(ngModel)]="loginData.password"
+    />
+
+    <span class="spin"></span>
+
+  </div>
+
+
+  <!-- LOGIN ERROR -->
+  <div
+    *ngIf="errorMessage && !isRegisterMode"
+    class="login-error"
+  >
+    {{ errorMessage }}
+  </div>
+
+
+  <!-- LOGIN BUTTON -->
+  <div class="button login">
+
+    <button
+      type="button"
+      (click)="login()"
+      [disabled]="isLoading"
+    >
+
+      <span>
+        {{ isLoading ? 'LOGGING IN...' : 'GO' }}
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- FORGOT PASSWORD -->
+  <a
+    href="#"
+    class="pass-forgot"
+    (click)="$event.preventDefault()"
+  >
+    Forgot your password?
+  </a>
+
+</div>
+
+    <!-- =========================
+         REGISTER / OTP
+    ========================== -->
+    <div
+      class="overbox"
+      [class.active]="isRegisterMode"
+    >
+
+      <!-- RED + BUTTON -->
+      <button
+        type="button"
+        class="material-button alt-2"
+        [class.active]="isRegisterMode"
+        (click)="
+          isRegisterMode
+            ? closeRegister()
+            : openRegister()
+        "
+      >
+        <span class="shape"></span>
+      </button>
+
+
+      <div class="register-content">
+
+
+        <!-- =========================
+             REGISTER FORM
+        ========================== -->
+        <ng-container *ngIf="!showOtp">
+
+          <div class="title">
+            REGISTER
+          </div>
+
+
+          <div class="input">
+            <label for="regname">
+              Username
+            </label>
+
+            <input
+              type="text"
+              id="regname"
+              name="regname"
+              placeholder=" "
+              [(ngModel)]="registerData.username"
+            />
+
+            <span class="spin"></span>
+          </div>
+
+
+          <div class="input">
+            <label for="regemail">
+              Email
+            </label>
+
+            <input
+              type="email"
+              id="regemail"
+              name="regemail"
+              placeholder=" "
+              [(ngModel)]="registerData.email"
+            />
+
+            <span class="spin"></span>
+          </div>
+
+
+          <div class="input">
+            <label for="regpass">
+              Password
+            </label>
+
+            <input
+              type="password"
+              id="regpass"
+              name="regpass"
+              placeholder=" "
+              [(ngModel)]="registerData.password"
+            />
+
+            <span class="spin"></span>
+          </div>
+
+
+          <div class="input">
+            <label for="reregpass">
+              Repeat Password
+            </label>
+
+            <input
+              type="password"
+              id="reregpass"
+              name="reregpass"
+              placeholder=" "
+              [(ngModel)]="registerData.confirmPassword"
+            />
+
+            <span class="spin"></span>
+          </div>
+
+
+          <div
+            *ngIf="errorMessage"
+            class="auth-error"
+          >
+            {{ errorMessage }}
+          </div>
+
+
+          <div class="button">
+            <button
+              type="button"
+              (click)="register()"
+              [disabled]="isLoading"
+            >
+              <span>
+                {{ isLoading ? 'PLEASE WAIT...' : 'NEXT' }}
+              </span>
+            </button>
+          </div>
+
+        </ng-container>
+
+
+        <!-- =========================
+             OTP FORM
+        ========================== -->
+        <ng-container *ngIf="showOtp">
+
+          <div class="title">
+            VERIFY OTP
+          </div>
+
+
+          <p class="otp-text">
+            OTP sent to:
+            <strong>
+              {{ otpEmail }}
+            </strong>
+          </p>
+
+
+          <div class="input">
+
+            <label for="otp">
+              Enter 6-digit OTP
+            </label>
+
+            <input
+              type="text"
+              id="otp"
+              name="otp"
+              placeholder=" "
+              maxlength="6"
+              inputmode="numeric"
+              [(ngModel)]="otpCode"
+            />
+
+            <span class="spin"></span>
+          </div>
+
+
+          <div
+            *ngIf="message"
+            class="auth-success"
+          >
+            {{ message }}
+          </div>
+
+
+          <div
+            *ngIf="errorMessage"
+            class="auth-error"
+          >
+            {{ errorMessage }}
+          </div>
+
+
+          <div class="button">
+            <button
+              type="button"
+              (click)="verifyOtp()"
+              [disabled]="isLoading"
+            >
+              <span>
+                {{ isLoading ? 'VERIFYING...' : 'VERIFY OTP' }}
+              </span>
+            </button>
+          </div>
+
+        </ng-container>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+from datetime import timedelta
 
 # =========================================================
 # BASE DIRECTORY
@@ -18,10 +18,7 @@ SECRET_KEY = os.environ.get(
     'development-only-secret-key'
 )
 
-DEBUG = os.environ.get(
-    'DEBUG',
-    'False'
-).lower() == 'true'
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 
 ALLOWED_HOSTS = [
@@ -36,13 +33,13 @@ ALLOWED_HOSTS = [
 # =========================================================
 
 CSRF_TRUSTED_ORIGINS = [
-       'https://smart-web-notes.onrender.com',
+    "https://smart-web-notes.onrender.com",
+    "https://smart-web-notes-backend.onrender.com",
 ]
 
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
-    'http://127.0.0.1:4200',
      'https://smart-web-notes.onrender.com',
 ]
 
@@ -54,6 +51,7 @@ CORS_ALLOWED_ORIGINS = [
 INSTALLED_APPS = [
 
     'django.contrib.admin',
+    "corsheaders",
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -61,9 +59,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'corsheaders',
 
     'notes',
+    'accounts',
 ]
 
 
@@ -72,14 +70,13 @@ INSTALLED_APPS = [
 # =========================================================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
-    'corsheaders.middleware.CorsMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
 
-    'django.middleware.common.CommonMiddleware',
 
     'django.middleware.csrf.CsrfViewMiddleware',
 
@@ -134,7 +131,8 @@ TEMPLATES = [
 
 # =========================================================
 # DATABASE
-# =========================================================
+# ====
+# =====================================================
 
 # =========================================================
 # DATABASE
@@ -244,3 +242,23 @@ EMAIL_BACKEND = (
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+
+    'ROTATE_REFRESH_TOKENS': True,
+
+    'BLACKLIST_AFTER_ROTATION': False,
+
+    'AUTH_HEADER_TYPES': (
+        'Bearer',
+    ),
+}

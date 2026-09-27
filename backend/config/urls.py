@@ -17,6 +17,10 @@ urlpatterns = [
         include('notes.urls')
     ),
 
+    path(
+        'api/auth/',
+        include('accounts.urls')
+    ),
 ]
 
 

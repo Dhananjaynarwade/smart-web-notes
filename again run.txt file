@@ -1,0 +1,28 @@
+If your laptop is shut down, your deployed Render app will still keep working. You do not need to start Django locally just to use the live website.
+For the deployed app, after restarting your laptop, simply open:
+Frontend:
+https://smart-web-notes.onrender.com
+
+Backend admin:
+https://smart-web-notes-backend.onrender.com/admin/
+
+No CMD commands are required.
+If you want to continue local development, then start frontend and backend again.
+1. Backend — open CMD:
+cd "D:\Dhananjay AWS\Django Projects\smart-web-notes\backend"
+.venv\Scripts\activate
+python manage.py runserver
+
+Then local backend/admin works at:
+http://127.0.0.1:8000/
+http://127.0.0.1:8000/admin/
+
+2. Frontend — open a second CMD window:
+cd "D:\Dhananjay AWS\Django Projects\smart-web-notes\frontend"
+npm start
+
+or:
+ng serve
+
+Then open:
+http://localhost:4200/

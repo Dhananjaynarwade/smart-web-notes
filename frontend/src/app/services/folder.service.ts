@@ -1,471 +1,146 @@
-import {
-  Injectable,
-  inject,
-  signal
-} from '@angular/core';
+# Angular Project Creation - NPM Install Error
 
-import {
-  HttpClient
-} from '@angular/common/http';
+## Date
 
-import {
-  firstValueFrom
-} from 'rxjs';
+26 September 2026
 
+## Project
 
-interface ApiFolder {
-  id: number;
-  name: string;
-  created_at: string;
-}
+Mini AWS
 
+## Error
 
-@Injectable({
-  providedIn: 'root'
-})
-export class FolderService {
+While creating the Angular project using:
 
-  private readonly http =
-    inject(HttpClient);
+ng new mini-aws-frontend
 
+npm failed during package installation.
 
-  private readonly apiUrl =
-  'https://smart-web-notes-backend.onrender.com/api/folders/';
+Error:
 
+npm ERR! Cannot read properties of null (reading 'edgesOut')
 
-  // ==========================================
-  // PROTECTED FOLDER
-  // ==========================================
+npm ERR! Package install failed.
 
-  // Only All Notes cannot be renamed/deleted.
-  private readonly defaultFolders = [
-    'All Notes'
-  ];
+The Schematic workflow failed.
 
+---
 
-  // ==========================================
-  // FOLDERS
-  // ==========================================
+# What caused it?
 
-  readonly folders =
-    signal<string[]>([
-      'All Notes'
-    ]);
+The Angular CLI successfully started creating the application.
 
+The failure happened when npm was resolving/installing the project's
+dependencies.
 
-  // ==========================================
-  // SELECTED FOLDER
-  // ==========================================
+Possible reasons include:
 
-  readonly selectedFolder =
-    signal('All Notes');
+- npm dependency-tree resolution problem
+- npm cache problem
+- npm version bug
+- incomplete previous installation
+- corrupted node_modules/package-lock state
 
+This was NOT an Angular application code error.
 
-  constructor() {
+---
 
-    void this.loadFolders();
+# Step 1 - Check Node and npm
 
-  }
+Run:
 
+node -v
 
-  // ==========================================
-  // LOAD FOLDERS FROM DJANGO
-  // ==========================================
+npm -v
 
-  async loadFolders(): Promise<void> {
+---
 
-    try {
+# Step 2 - Check npm
 
-      const apiFolders =
-        await firstValueFrom(
-          this.http.get<ApiFolder[]>(
-            this.apiUrl
-          )
-        );
+Run:
 
+npm doctor
 
-      const savedNames =
-        apiFolders.map(
-          folder => folder.name
-        );
+---
 
+# Step 3 - Clean npm cache if required
 
-      // All Notes always stays first.
-      const allFolders = [
-        'All Notes',
-        ...savedNames.filter(
-          name =>
-            name.toLowerCase() !==
-            'all notes'
-        )
-      ];
+Run:
 
+npm cache clean --force
 
-      this.folders.set(
-        Array.from(
-          new Set(allFolders)
-        )
-      );
+Then verify:
 
+npm cache verify
 
-      // If selected folder was deleted,
-      // return safely to All Notes.
-      if (
-        !this.folders().includes(
-          this.selectedFolder()
-        )
-      ) {
+---
 
-        this.selectedFolder.set(
-          'All Notes'
-        );
+# Step 4 - Remove incomplete project if ng new failed
 
-      }
+Example:
 
+cd /d "D:\Cloud projects"
 
-    } catch (error) {
+rmdir /s /q mini-aws-frontend
 
-      console.error(
-        'Failed to load folders:',
-        error
-      );
+Only do this if the Angular project creation failed and the folder contains
+an incomplete project.
 
-    }
+---
 
-  }
+# Step 5 - Create project again
 
+Run:
 
-  // ==========================================
-  // CHECK PROTECTED FOLDER
-  // ==========================================
+ng new mini-aws-frontend
 
-  isDefaultFolder(
-    folder: string
-  ): boolean {
+Options:
 
-    return this.defaultFolders
-      .some(
-        item =>
-          item.toLowerCase() ===
-          folder.toLowerCase()
-      );
+Routing        = Yes
+Stylesheet     = CSS
+SSR / SSG      = No
+AI Integration = None
 
-  }
+---
 
+# Successful Result
 
-  // ==========================================
-  // SELECT FOLDER
-  // ==========================================
+The second installation completed with:
 
-  selectFolder(
-    folder: string
-  ): void {
+Packages installed successfully.
 
-    this.selectedFolder.set(
-      folder
-    );
+Successfully initialized git.
 
-  }
+Therefore the Angular project was created successfully.
 
+---
 
-  // ==========================================
-  // CREATE FOLDER
-  // ==========================================
+# Important
 
-  async addFolder(
-    folderName: string
-  ): Promise<string | null> {
+Do not delete or recreate the project if:
 
-    const name =
-      folderName.trim();
+ng new
 
+has already completed successfully.
 
-    if (!name) {
-      return null;
-    }
+Test the project first:
 
+cd /d "D:\Cloud projects\mini-aws-frontend"
 
-    const existingFolder =
-      this.folders()
-        .find(
-          folder =>
-            folder.toLowerCase() ===
-            name.toLowerCase()
-        );
+ng serve
 
+Open:
 
-    // Folder already exists
-    if (existingFolder) {
+http://localhost:4200
 
-      this.selectFolder(
-        existingFolder
-      );
+---
 
-      return existingFolder;
+# Windows Git Warning
 
-    }
+Warnings such as:
 
+LF will be replaced by CRLF
 
-    try {
+are normal Windows Git line-ending warnings.
 
-      const createdFolder =
-        await firstValueFrom(
-          this.http.post<ApiFolder>(
-            this.apiUrl,
-            {
-              name
-            }
-          )
-        );
-
-
-      this.folders.update(
-        folders => [
-          ...folders,
-          createdFolder.name
-        ]
-      );
-
-
-      this.selectFolder(
-        createdFolder.name
-      );
-
-
-      return createdFolder.name;
-
-
-    } catch (error) {
-
-      console.error(
-        'Folder creation failed:',
-        error
-      );
-
-      return null;
-
-    }
-
-  }
-
-
-  // ==========================================
-  // RENAME FOLDER
-  // ==========================================
-
-  async renameFolder(
-    oldName: string,
-    newName: string
-  ): Promise<boolean> {
-
-    // Never rename All Notes
-    if (
-      this.isDefaultFolder(oldName)
-    ) {
-      return false;
-    }
-
-
-    const cleanName =
-      newName.trim();
-
-
-    if (!cleanName) {
-      return false;
-    }
-
-
-    // Same name
-    if (
-      oldName.toLowerCase() ===
-      cleanName.toLowerCase()
-    ) {
-      return false;
-    }
-
-
-    // Prevent duplicate names
-    const alreadyExists =
-      this.folders()
-        .some(
-          folder =>
-            folder.toLowerCase() ===
-            cleanName.toLowerCase()
-        );
-
-
-    if (alreadyExists) {
-      return false;
-    }
-
-
-    try {
-
-      const apiFolders =
-        await firstValueFrom(
-          this.http.get<ApiFolder[]>(
-            this.apiUrl
-          )
-        );
-
-
-      const folder =
-        apiFolders.find(
-          item =>
-            item.name === oldName
-        );
-
-
-      if (!folder) {
-
-        console.warn(
-          'Folder not found in Django:',
-          oldName
-        );
-
-        return false;
-
-      }
-
-
-      const updatedFolder =
-        await firstValueFrom(
-          this.http.patch<ApiFolder>(
-            `${this.apiUrl}${folder.id}/`,
-            {
-              name: cleanName
-            }
-          )
-        );
-
-
-      this.folders.update(
-        folders =>
-          folders.map(
-            item =>
-              item === oldName
-                ? updatedFolder.name
-                : item
-          )
-      );
-
-
-      if (
-        this.selectedFolder() ===
-        oldName
-      ) {
-
-        this.selectedFolder.set(
-          updatedFolder.name
-        );
-
-      }
-
-
-      return true;
-
-
-    } catch (error) {
-
-      console.error(
-        'Folder rename failed:',
-        error
-      );
-
-      return false;
-
-    }
-
-  }
-
-
-  // ==========================================
-  // DELETE FOLDER
-  // ==========================================
-
-  async deleteFolder(
-    folderName: string
-  ): Promise<boolean> {
-
-    // Never delete All Notes
-    if (
-      this.isDefaultFolder(folderName)
-    ) {
-      return false;
-    }
-
-
-    try {
-
-      const apiFolders =
-        await firstValueFrom(
-          this.http.get<ApiFolder[]>(
-            this.apiUrl
-          )
-        );
-
-
-      const folder =
-        apiFolders.find(
-          item =>
-            item.name === folderName
-        );
-
-
-      if (!folder) {
-
-        console.warn(
-          'Folder not found in Django:',
-          folderName
-        );
-
-        return false;
-
-      }
-
-
-      await firstValueFrom(
-        this.http.delete(
-          `${this.apiUrl}${folder.id}/`
-        )
-      );
-
-
-      this.folders.update(
-        folders =>
-          folders.filter(
-            item =>
-              item !== folderName
-          )
-      );
-
-
-      if (
-        this.selectedFolder() ===
-        folderName
-      ) {
-
-        this.selectedFolder.set(
-          'All Notes'
-        );
-
-      }
-
-
-      return true;
-
-
-    } catch (error) {
-
-      console.error(
-        'Folder delete failed:',
-        error
-      );
-
-      return false;
-
-    }
-
-  }
-
-}
+They do not mean the Angular project failed.
